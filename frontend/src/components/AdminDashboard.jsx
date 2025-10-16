@@ -519,12 +519,12 @@ export default function AdminDashboard({ user, token, onLogout }) {
               <div className="max-w-2xl">
                 <h3 className="text-xl font-bold mb-4">Pricing Configuration</h3>
                 <div className="bg-blue-50 p-4 rounded-lg mb-6">
-                  <p className="text-sm text-blue-900 font-semibold mb-2">Daily Pipeline Pricing</p>
-                  <p className="text-xs text-blue-700">Set the daily rack price from the pipeline. Customer prices are calculated as: Rack Price + Customer Modifier</p>
+                  <p className="text-sm text-blue-900 font-semibold mb-2">Daily Refinery Pricing</p>
+                  <p className="text-xs text-blue-700">Set the daily rack price from the refinery. Customer prices are calculated as: Rack Price + Rack Price Adjustment</p>
                 </div>
                 <form onSubmit={handleUpdatePricing} className="space-y-4">
                   <div>
-                    <Label>Rack Price per Liter ($) - Daily Pipeline Rate</Label>
+                    <Label>Rack Price per Liter ($) - Daily Refinery Rate</Label>
                     <Input
                       data-testid="pricing-rack-price"
                       type="number"
@@ -533,7 +533,7 @@ export default function AdminDashboard({ user, token, onLogout }) {
                       onChange={(e) => setPricing({ ...pricing, rack_price: parseFloat(e.target.value) })}
                       required
                     />
-                    <p className="text-sm text-gray-600 mt-1">Base fuel price from pipeline (updated daily)</p>
+                    <p className="text-sm text-gray-600 mt-1">Base fuel price from refinery (updated daily)</p>
                   </div>
 
                   <div>
