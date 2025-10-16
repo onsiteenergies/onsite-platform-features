@@ -473,7 +473,7 @@ export default function AdminDashboard({ user, token, onLogout }) {
                     <DialogHeader>
                       <DialogTitle>Update Customer Pricing</DialogTitle>
                     </DialogHeader>
-                    <p id="customer-pricing-description" className="sr-only">Adjust the per-liter price modifier for this customer</p>
+                    <p id="customer-pricing-description" className="sr-only">Adjust the per-liter rack price adjustment for this customer</p>
                     {selectedCustomer && (
                       <form onSubmit={handleUpdateCustomerPricing} className="space-y-4 mt-4">
                         <div>
@@ -481,7 +481,7 @@ export default function AdminDashboard({ user, token, onLogout }) {
                           <Input value={selectedCustomer.name} disabled />
                         </div>
                         <div>
-                          <Label>Price Modifier ($/L)</Label>
+                          <Label>Rack Price Adjustment ($/L)</Label>
                           <Input
                             data-testid="customer-price-modifier"
                             type="number"
