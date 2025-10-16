@@ -432,29 +432,81 @@ export default function CustomerDashboard({ user, token, onLogout }) {
 
                 {/* Price Breakdown */}
                 <div className="border-t pt-4 mb-4">
-                  <h4 className="font-semibold mb-2">Price Breakdown</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
+                  <h4 className="font-semibold mb-3">Price Breakdown</h4>
+                  <div className="space-y-3">
+                    {/* Fuel Price Calculation */}
                     {booking.rack_price && booking.customer_price_modifier !== undefined && (
-                      <>
-                        <div className="text-gray-600 col-span-2 mb-1">
-                          <span className="font-semibold">Fuel Price Calculation:</span> Rack ${booking.rack_price.toFixed(3)}/L 
-                          {booking.customer_price_modifier >= 0 ? ' + ' : ' '}
-                          ${booking.customer_price_modifier.toFixed(3)}/L = ${booking.fuel_price_per_liter.toFixed(3)}/L
+                      <div className="bg-blue-50 p-3 rounded-lg">
+                        <div className="text-sm font-semibold text-blue-900 mb-2">Fuel Price Calculation:</div>
+                        <div className="text-sm text-blue-800 space-y-1">
+                          <div className="flex justify-between">
+                            <span>Rack Price (Daily Pipeline Rate):</span>
+                            <span className="font-medium">${booking.rack_price.toFixed(3)}/L</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Customer Price Modifier:</span>
+                            <span className={`font-medium ${booking.customer_price_modifier >= 0 ? 'text-green-700' : 'text-red-700'}`}>
+                              {booking.customer_price_modifier >= 0 ? '+' : ''}${booking.customer_price_modifier.toFixed(3)}/L
+                            </span>
+                          </div>
+                          <div className="flex justify-between border-t border-blue-200 pt-1 mt-1">
+                            <span className="font-semibold">Your Fuel Price:</span>
+                            <span className="font-bold text-blue-900">${booking.fuel_price_per_liter.toFixed(3)}/L</span>
+                          </div>
                         </div>
-                      </>
+                      </div>
                     )}
-                    <div className="text-gray-600">Fuel Cost (${booking.fuel_price_per_liter.toFixed(3)}/L × {booking.fuel_quantity_liters}L):</div>
-                    <div className="text-right">${(booking.fuel_quantity_liters * booking.fuel_price_per_liter).toFixed(2)}</div>
-                    <div className="text-gray-600">Federal Carbon Tax (${booking.federal_carbon_tax}/L × {booking.fuel_quantity_liters}L):</div>
-                    <div className="text-right">${(booking.fuel_quantity_liters * booking.federal_carbon_tax).toFixed(2)}</div>
-                    <div className="text-gray-600">Quebec Carbon Tax (${booking.quebec_carbon_tax}/L × {booking.fuel_quantity_liters}L):</div>
-                    <div className="text-right">${(booking.fuel_quantity_liters * booking.quebec_carbon_tax).toFixed(2)}</div>
-                    <div className="text-gray-600">GST ({(booking.gst_rate * 100).toFixed(2)}%):</div>
-                    <div className="text-right">${(booking.subtotal * booking.gst_rate).toFixed(2)}</div>
-                    <div className="text-gray-600">QST ({(booking.qst_rate * 100).toFixed(3)}%):</div>
-                    <div className="text-right">${(booking.subtotal * booking.qst_rate).toFixed(2)}</div>
-                    <div className="font-bold text-gray-900 border-t pt-2">Total:</div>
-                    <div className="text-right font-bold text-green-600 border-t pt-2">${booking.total_price}</div>
+
+                    {/* Line Items */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-700">
+                          <span className="font-medium">Fuel Cost:</span> ${booking.fuel_price_per_liter.toFixed(3)}/L × {booking.fuel_quantity_liters}L
+                        </span>
+                        <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.fuel_price_per_liter).toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-700">
+                          <span className="font-medium">Federal Carbon Tax:</span> ${booking.federal_carbon_tax.toFixed(3)}/L × {booking.fuel_quantity_liters}L
+                        </span>
+                        <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.federal_carbon_tax).toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-700">
+                          <span className="font-medium">Quebec Carbon Tax:</span> ${booking.quebec_carbon_tax.toFixed(3)}/L × {booking.fuel_quantity_liters}L
+                        </span>
+                        <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.quebec_carbon_tax).toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex justify-between text-sm pt-2 border-t">
+                        <span className="text-gray-700">
+                          <span className="font-medium">Subtotal:</span>
+                        </span>
+                        <span className="font-semibold text-gray-900">${booking.subtotal.toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-700">
+                          <span className="font-medium">GST:</span> {(booking.gst_rate * 100).toFixed(2)}% on subtotal
+                        </span>
+                        <span className="font-semibold text-gray-900">${(booking.subtotal * booking.gst_rate).toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-700">
+                          <span className="font-medium">QST:</span> {(booking.qst_rate * 100).toFixed(3)}% on subtotal
+                        </span>
+                        <span className="font-semibold text-gray-900">${(booking.subtotal * booking.qst_rate).toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex justify-between text-base pt-3 border-t-2 border-gray-300">
+                        <span className="font-bold text-gray-900">Total Amount:</span>
+                        <span className="font-bold text-green-600 text-lg">${booking.total_price}</span>
+                      </div>
+                    </div>
+                  </div>
                   </div>
                 </div>
 
