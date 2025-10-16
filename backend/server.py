@@ -632,11 +632,15 @@ async def export_invoice_pdf(booking_id: str, current_user: dict = Depends(get_c
     elements.append(price_header)
     elements.append(Spacer(1, 0.1*inch))
     
+    # Use dispensed amount if available, otherwise use fuel_quantity_liters
+    quantity_for_price = booking.get('dispensed_amount', booking["fuel_quantity_liters"])
+    quantity_label = f"Dispensed: {quantity_for_price}L" if booking.get('dispensed_amount') else f"{quantity_for_price}L"
+    
     price_data = [
         ['Description', 'Rate/Amount', 'Total'],
-        [f'Fuel Price ({booking["fuel_quantity_liters"]}L)', f'${booking["fuel_price_per_liter"]:.4f}/L', f'${booking["fuel_quantity_liters"] * booking["fuel_price_per_liter"]:.2f}'],
-        [f'Federal Carbon Tax ({booking["fuel_quantity_liters"]}L)', f'${booking["federal_carbon_tax"]:.4f}/L', f'${booking["fuel_quantity_liters"] * booking["federal_carbon_tax"]:.2f}'],
-        [f'Quebec Carbon Tax ({booking["fuel_quantity_liters"]}L)', f'${booking["quebec_carbon_tax"]:.4f}/L', f'${booking["fuel_quantity_liters"] * booking["quebec_carbon_tax"]:.2f}'],
+        [f'Fuel Price ({quantity_label})', f'${booking["fuel_price_per_liter"]:.4f}/L', f'${quantity_for_price * booking["fuel_price_per_liter"]:.2f}'],
+        [f'Federal Carbon Tax ({quantity_label})', f'${booking["federal_carbon_tax"]:.4f}/L', f'${quantity_for_price * booking["federal_carbon_tax"]:.2f}'],
+        [f'Quebec Carbon Tax ({quantity_label})', f'${booking["quebec_carbon_tax"]:.4f}/L', f'${quantity_for_price * booking["quebec_carbon_tax"]:.2f}'],
         ['Subtotal', '', f'${booking["subtotal"]:.2f}'],
         [f'GST ({booking["gst_rate"]*100:.2f}%)', '', f'${booking["subtotal"] * booking["gst_rate"]:.2f}'],
         [f'QST ({booking["qst_rate"]*100:.4f}%)', '', f'${booking["subtotal"] * booking["qst_rate"]:.2f}'],
