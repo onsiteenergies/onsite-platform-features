@@ -70,6 +70,7 @@ class User(BaseModel):
     email: str
     name: str
     role: str = "customer"  # customer or admin
+    price_modifier: float = 0.0  # +/- per liter on top of rack price
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class UserRegister(BaseModel):
