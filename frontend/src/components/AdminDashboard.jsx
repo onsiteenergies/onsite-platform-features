@@ -583,7 +583,7 @@ export default function AdminDashboard({ user, token, onLogout }) {
                       onChange={(e) => setPricing({ ...pricing, qst_rate: parseFloat(e.target.value) })}
                       required
                     />
-                    <p className="text-sm text-gray-600 mt-1">Current: {(pricing.qst_rate * 100).toFixed(3)}%</p>
+                    <p className="text-sm text-gray-600 mt-1">Current: {(pricing.qst_rate * 100).toFixed(4)}%</p>
                   </div>
 
                   <Button
