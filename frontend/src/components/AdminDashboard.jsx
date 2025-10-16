@@ -415,6 +415,105 @@ export default function AdminDashboard({ user, token, onLogout }) {
               </div>
             </TabsContent>
 
+            {/* Customers Tab */}
+            <TabsContent value="customers">
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold mb-4">Customer Pricing Management</h3>
+                <div className="bg-green-50 p-4 rounded-lg mb-6">
+                  <p className="text-sm text-green-900 font-semibold mb-2">Customer Price Modifiers</p>
+                  <p className="text-xs text-green-700">Set +/- per liter adjustments for each customer. Final price = Rack Price + Customer Modifier</p>
+                  <p className="text-xs text-green-700 mt-1">Example: Rack $1.50/L + Modifier $0.10/L = Customer pays $1.60/L</p>
+                </div>
+
+                {customers.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <Users className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+                    <p className="text-gray-600">No customers yet</p>
+                  </Card>
+                ) : (
+                  <div className="grid gap-4">
+                    {customers.map((customer) => (
+                      <Card key={customer.id} className="p-4" data-testid={`customer-${customer.id}`}>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-bold text-lg">{customer.name}</h4>
+                            <p className="text-sm text-gray-600">{customer.email}</p>
+                            <div className="mt-2">
+                              <span className="text-sm text-gray-700">Price Modifier: </span>
+                              <span className={`font-semibold ${customer.price_modifier >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                {customer.price_modifier >= 0 ? '+' : ''}{customer.price_modifier.toFixed(3)}/L
+                              </span>
+                            </div>
+                            {pricing && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                Customer's fuel price: ${(pricing.rack_price + customer.price_modifier).toFixed(3)}/L
+                              </p>
+                            )}
+                          </div>
+                          <Button
+                            onClick={() => {
+                              setSelectedCustomer(customer);
+                              setShowCustomerPricing(true);
+                            }}
+                            size="sm"
+                            data-testid={`edit-pricing-${customer.id}`}
+                            className="bg-gradient-to-r from-blue-600 to-green-600"
+                          >
+                            Edit Pricing
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+
+                {/* Edit Customer Pricing Dialog */}
+                <Dialog open={showCustomerPricing} onOpenChange={setShowCustomerPricing}>
+                  <DialogContent aria-describedby="customer-pricing-description">
+                    <DialogHeader>
+                      <DialogTitle>Update Customer Pricing</DialogTitle>
+                    </DialogHeader>
+                    <p id="customer-pricing-description" className="sr-only">Adjust the per-liter price modifier for this customer</p>
+                    {selectedCustomer && (
+                      <form onSubmit={handleUpdateCustomerPricing} className="space-y-4 mt-4">
+                        <div>
+                          <Label>Customer</Label>
+                          <Input value={selectedCustomer.name} disabled />
+                        </div>
+                        <div>
+                          <Label>Price Modifier ($/L)</Label>
+                          <Input
+                            data-testid="customer-price-modifier"
+                            type="number"
+                            step="0.001"
+                            value={selectedCustomer.price_modifier}
+                            onChange={(e) => setSelectedCustomer({ ...selectedCustomer, price_modifier: e.target.value })}
+                            required
+                          />
+                          <p className="text-sm text-gray-600 mt-1">
+                            Positive = customer pays more, Negative = customer pays less
+                          </p>
+                          {pricing && (
+                            <p className="text-sm text-blue-600 mt-2 font-semibold">
+                              Final Price: ${(pricing.rack_price + parseFloat(selectedCustomer.price_modifier || 0)).toFixed(3)}/L
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex justify-end space-x-2">
+                          <Button type="button" variant="outline" onClick={() => setShowCustomerPricing(false)}>
+                            Cancel
+                          </Button>
+                          <Button type="submit" data-testid="update-customer-pricing-submit">
+                            Update Pricing
+                          </Button>
+                        </div>
+                      </form>
+                    )}
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </TabsContent>
+
             {/* Pricing Tab */}
             <TabsContent value="pricing">
               <div className="max-w-2xl">
