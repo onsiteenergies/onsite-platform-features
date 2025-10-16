@@ -434,7 +434,16 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                 <div className="border-t pt-4 mb-4">
                   <h4 className="font-semibold mb-2">Price Breakdown</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="text-gray-600">Fuel Cost (${booking.fuel_price_per_liter}/L × {booking.fuel_quantity_liters}L):</div>
+                    {booking.rack_price && booking.customer_price_modifier !== undefined && (
+                      <>
+                        <div className="text-gray-600 col-span-2 mb-1">
+                          <span className="font-semibold">Fuel Price Calculation:</span> Rack ${booking.rack_price.toFixed(3)}/L 
+                          {booking.customer_price_modifier >= 0 ? ' + ' : ' '}
+                          ${booking.customer_price_modifier.toFixed(3)}/L = ${booking.fuel_price_per_liter.toFixed(3)}/L
+                        </div>
+                      </>
+                    )}
+                    <div className="text-gray-600">Fuel Cost (${booking.fuel_price_per_liter.toFixed(3)}/L × {booking.fuel_quantity_liters}L):</div>
                     <div className="text-right">${(booking.fuel_quantity_liters * booking.fuel_price_per_liter).toFixed(2)}</div>
                     <div className="text-gray-600">Federal Carbon Tax (${booking.federal_carbon_tax}/L × {booking.fuel_quantity_liters}L):</div>
                     <div className="text-right">${(booking.fuel_quantity_liters * booking.federal_carbon_tax).toFixed(2)}</div>
