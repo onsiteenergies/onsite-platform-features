@@ -462,6 +462,44 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                   </div>
                 </div>
 
+                {/* Invoice Details for Delivered Orders */}
+                {booking.status === 'delivered' && (booking.ordered_amount || booking.dispensed_amount) && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <h4 className="font-semibold text-green-900">Delivery Completed</h4>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleExportPDF(booking.id)}
+                        data-testid={`customer-export-pdf-${booking.id}`}
+                        className="border-green-600 text-green-700 hover:bg-green-100"
+                      >
+                        <FileText className="w-4 h-4 mr-1" />
+                        Export Invoice PDF
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-700">Ordered Amount:</span>
+                        <span className="font-bold text-green-900 ml-2">{booking.ordered_amount}L</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-700">Dispensed Amount:</span>
+                        <span className="font-bold text-green-900 ml-2">{booking.dispensed_amount}L</span>
+                      </div>
+                      {booking.ordered_amount !== booking.dispensed_amount && (
+                        <div className="col-span-2">
+                          <span className="text-gray-700">Difference:</span>
+                          <span className={`font-bold ml-2 ${booking.dispensed_amount > booking.ordered_amount ? 'text-blue-600' : 'text-orange-600'}`}>
+                            {booking.dispensed_amount > booking.ordered_amount ? '+' : ''}
+                            {(booking.dispensed_amount - booking.ordered_amount).toFixed(2)}L
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Price Breakdown */}
                 <div className="border-t pt-4 mb-4">
                   <h4 className="font-semibold mb-3">Price Breakdown</h4>
