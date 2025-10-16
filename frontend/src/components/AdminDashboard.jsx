@@ -279,10 +279,11 @@ export default function AdminDashboard({ user, token, onLogout }) {
                         Add Log
                       </Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent aria-describedby="log-dialog-description">
                       <DialogHeader>
                         <DialogTitle>Create Delivery Log</DialogTitle>
                       </DialogHeader>
+                      <p id="log-dialog-description" className="sr-only">Record a delivery log for a completed fuel delivery</p>
                       <form onSubmit={handleCreateLog} className="space-y-4 mt-4">
                         <div>
                           <Label>Booking ID *</Label>
