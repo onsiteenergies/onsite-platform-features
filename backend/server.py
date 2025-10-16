@@ -443,6 +443,224 @@ async def update_customer_pricing(
     customer = await db.users.find_one({"id": customer_id}, {"_id": 0, "password": 0})
     return customer
 
+# Invoice Management Routes
+@api_router.put("/invoices/{booking_id}")
+async def update_invoice(
+    booking_id: str,
+    invoice_data: InvoiceUpdate,
+    current_user: dict = Depends(get_current_user)
+):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    update_fields = {k: v for k, v in invoice_data.model_dump().items() if v is not None}
+    update_fields['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.bookings.update_one(
+        {"id": booking_id},
+        {"$set": update_fields}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    return booking
+
+# Image Upload for Invoices
+@api_router.post("/invoices/{booking_id}/upload-image")
+async def upload_invoice_image(
+    booking_id: str,
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user)
+):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Check if booking exists
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    # Check image count
+    current_images = booking.get('invoice_images', [])
+    if len(current_images) >= 5:
+        raise HTTPException(status_code=400, detail="Maximum 5 images allowed per invoice")
+    
+    # Save file
+    file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+    file_name = f"{booking_id}_{uuid.uuid4()}.{file_ext}"
+    file_path = INVOICE_IMAGES_DIR / file_name
+    
+    contents = await file.read()
+    with open(file_path, "wb") as f:
+        f.write(contents)
+    
+    # Update booking with image path
+    current_images.append(file_name)
+    await db.bookings.update_one(
+        {"id": booking_id},
+        {"$set": {"invoice_images": current_images, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {"filename": file_name, "message": "Image uploaded successfully"}
+
+@api_router.delete("/invoices/{booking_id}/images/{image_filename}")
+async def delete_invoice_image(
+    booking_id: str,
+    image_filename: str,
+    current_user: dict = Depends(get_current_user)
+):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    current_images = booking.get('invoice_images', [])
+    if image_filename not in current_images:
+        raise HTTPException(status_code=404, detail="Image not found")
+    
+    # Delete file
+    file_path = INVOICE_IMAGES_DIR / image_filename
+    if file_path.exists():
+        file_path.unlink()
+    
+    # Update booking
+    current_images.remove(image_filename)
+    await db.bookings.update_one(
+        {"id": booking_id},
+        {"$set": {"invoice_images": current_images, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {"message": "Image deleted successfully"}
+
+@api_router.get("/invoices/{booking_id}/images/{image_filename}")
+async def get_invoice_image(booking_id: str, image_filename: str):
+    file_path = INVOICE_IMAGES_DIR / image_filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Image not found")
+    return FileResponse(file_path)
+
+# PDF Export
+@api_router.get("/invoices/{booking_id}/export-pdf")
+async def export_invoice_pdf(booking_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    # Create PDF
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Title
+    title = Paragraph(f"<b>INVOICE - FuelTrack</b>", styles['Title'])
+    elements.append(title)
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # Booking Info
+    info_data = [
+        ['Invoice Number:', booking['id']],
+        ['Customer:', booking['user_name']],
+        ['Email:', booking['user_email']],
+        ['Date:', booking['created_at'][:10]],
+        ['Status:', booking['status'].upper()],
+    ]
+    info_table = Table(info_data, colWidths=[2*inch, 4*inch])
+    info_table.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+    ]))
+    elements.append(info_table)
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # Delivery Details
+    delivery_data = [
+        ['Delivery Address:', booking['delivery_address']],
+        ['Fuel Type:', booking['fuel_type'].upper()],
+        ['Preferred Date:', booking['preferred_date']],
+        ['Preferred Time:', booking['preferred_time']],
+    ]
+    if booking.get('ordered_amount'):
+        delivery_data.append(['Ordered Amount:', f"{booking['ordered_amount']} L"])
+    if booking.get('dispensed_amount'):
+        delivery_data.append(['Dispensed Amount:', f"{booking['dispensed_amount']} L"])
+    
+    delivery_table = Table(delivery_data, colWidths=[2*inch, 4*inch])
+    delivery_table.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+    ]))
+    elements.append(delivery_table)
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # Price Breakdown
+    price_header = Paragraph("<b>Price Breakdown</b>", styles['Heading2'])
+    elements.append(price_header)
+    elements.append(Spacer(1, 0.1*inch))
+    
+    price_data = [
+        ['Description', 'Rate/Amount', 'Total'],
+        [f'Fuel Price ({booking["fuel_quantity_liters"]}L)', f'${booking["fuel_price_per_liter"]:.4f}/L', f'${booking["fuel_quantity_liters"] * booking["fuel_price_per_liter"]:.2f}'],
+        [f'Federal Carbon Tax ({booking["fuel_quantity_liters"]}L)', f'${booking["federal_carbon_tax"]:.4f}/L', f'${booking["fuel_quantity_liters"] * booking["federal_carbon_tax"]:.2f}'],
+        [f'Quebec Carbon Tax ({booking["fuel_quantity_liters"]}L)', f'${booking["quebec_carbon_tax"]:.4f}/L', f'${booking["fuel_quantity_liters"] * booking["quebec_carbon_tax"]:.2f}'],
+        ['Subtotal', '', f'${booking["subtotal"]:.2f}'],
+        [f'GST ({booking["gst_rate"]*100:.2f}%)', '', f'${booking["subtotal"] * booking["gst_rate"]:.2f}'],
+        [f'QST ({booking["qst_rate"]*100:.4f}%)', '', f'${booking["subtotal"] * booking["qst_rate"]:.2f}'],
+        ['TOTAL', '', f'${booking["total_price"]}'],
+    ]
+    
+    price_table = Table(price_data, colWidths=[3*inch, 1.5*inch, 1.5*inch])
+    price_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('LINEABOVE', (0, -1), (-1, -1), 2, colors.black),
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, -1), (-1, -1), 12),
+    ]))
+    elements.append(price_table)
+    
+    # Add images if they exist
+    invoice_images = booking.get('invoice_images', [])
+    if invoice_images:
+        elements.append(Spacer(1, 0.3*inch))
+        elements.append(Paragraph("<b>Attached Images</b>", styles['Heading2']))
+        elements.append(Spacer(1, 0.1*inch))
+        
+        for img_name in invoice_images[:5]:
+            img_path = INVOICE_IMAGES_DIR / img_name
+            if img_path.exists():
+                try:
+                    img = RLImage(str(img_path), width=4*inch, height=3*inch)
+                    elements.append(img)
+                    elements.append(Spacer(1, 0.1*inch))
+                except:
+                    pass
+    
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+    
+    return FileResponse(
+        io.BytesIO(buffer.read()),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=invoice_{booking_id}.pdf"}
+    )
+
 # Include the router in the main app
 app.include_router(api_router)
 
