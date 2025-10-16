@@ -18,9 +18,12 @@ export default function AdminDashboard({ user, token, onLogout }) {
   const [stats, setStats] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [logs, setLogs] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [pricing, setPricing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showNewLog, setShowNewLog] = useState(false);
+  const [showCustomerPricing, setShowCustomerPricing] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [newLog, setNewLog] = useState({
     booking_id: '',
     truck_license_plate: '',
