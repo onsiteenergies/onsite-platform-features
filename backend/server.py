@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, File, UploadFile
+from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -12,9 +13,22 @@ from datetime import datetime, timezone
 from passlib.context import CryptContext
 import jwt
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image as RLImage
+from reportlab.lib.units import inch
+import io
+import base64
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Create directories for uploads
+UPLOAD_DIR = Path("/app/uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
+INVOICE_IMAGES_DIR = UPLOAD_DIR / "invoice_images"
+INVOICE_IMAGES_DIR.mkdir(exist_ok=True)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
