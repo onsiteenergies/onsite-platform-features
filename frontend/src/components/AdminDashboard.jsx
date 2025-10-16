@@ -38,17 +38,19 @@ export default function AdminDashboard({ user, token, onLogout }) {
 
   const fetchData = async () => {
     try {
-      const [statsRes, bookingsRes, logsRes, pricingRes] = await Promise.all([
+      const [statsRes, bookingsRes, logsRes, pricingRes, customersRes] = await Promise.all([
         axios.get(`${API}/stats`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/bookings`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/logs`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/pricing`)
+        axios.get(`${API}/pricing`),
+        axios.get(`${API}/customers`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
 
       setStats(statsRes.data);
       setBookings(bookingsRes.data);
       setLogs(logsRes.data);
       setPricing(pricingRes.data);
+      setCustomers(customersRes.data);
     } catch (error) {
       toast.error('Failed to fetch data');
     } finally {
