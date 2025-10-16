@@ -546,12 +546,13 @@ async def get_invoice_image(booking_id: str, image_filename: str):
 # PDF Export
 @api_router.get("/invoices/{booking_id}/export-pdf")
 async def export_invoice_pdf(booking_id: str, current_user: dict = Depends(get_current_user)):
-    if current_user['role'] != 'admin':
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
     booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
+    
+    # Check if user has access to this booking
+    if current_user['role'] != 'admin' and booking['user_id'] != current_user['id']:
+        raise HTTPException(status_code=403, detail="Access denied")
     
     # Create PDF
     buffer = io.BytesIO()
