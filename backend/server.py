@@ -453,8 +453,32 @@ async def update_invoice(
     if current_user['role'] != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
     
+    # Get current booking
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
     update_fields = {k: v for k, v in invoice_data.model_dump().items() if v is not None}
     update_fields['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    # If dispensed amount is provided, recalculate the total price
+    if invoice_data.dispensed_amount is not None:
+        dispensed_amount = invoice_data.dispensed_amount
+        
+        # Recalculate price based on dispensed amount
+        fuel_cost = dispensed_amount * booking['fuel_price_per_liter']
+        federal_tax = dispensed_amount * booking['federal_carbon_tax']
+        quebec_tax = dispensed_amount * booking['quebec_carbon_tax']
+        
+        subtotal = fuel_cost + federal_tax + quebec_tax
+        gst = subtotal * booking['gst_rate']
+        qst = subtotal * booking['qst_rate']
+        
+        total = subtotal + gst + qst
+        
+        # Update price fields based on dispensed amount
+        update_fields['subtotal'] = round(subtotal, 2)
+        update_fields['total_price'] = round(total, 2)
     
     result = await db.bookings.update_one(
         {"id": booking_id},
