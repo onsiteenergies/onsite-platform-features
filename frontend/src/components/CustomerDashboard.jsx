@@ -189,10 +189,11 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                 <span>New Booking</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" aria-describedby="booking-dialog-description">
               <DialogHeader>
                 <DialogTitle>Create New Booking</DialogTitle>
               </DialogHeader>
+              <p id="booking-dialog-description" className="sr-only">Fill out the form to create a new fuel delivery booking</p>
               <form onSubmit={handleCreateBooking} className="space-y-4 mt-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
