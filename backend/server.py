@@ -238,18 +238,21 @@ async def update_pricing(pricing_data: PricingConfigUpdate, current_user: dict =
     return pricing
 
 # Calculate price helper
-async def calculate_booking_price(liters: float):
+async def calculate_booking_price(liters: float, customer_price_modifier: float = 0.0):
     pricing = await db.pricing.find_one({}, {"_id": 0})
     if not pricing:
         pricing = {
-            'fuel_price_per_liter': 1.50,
+            'rack_price': 1.50,
             'federal_carbon_tax': 0.14,
             'quebec_carbon_tax': 0.05,
             'gst_rate': 0.05,
             'qst_rate': 0.09975
         }
     
-    fuel_cost = liters * pricing['fuel_price_per_liter']
+    # Calculate customer's final fuel price: rack price + customer modifier
+    customer_fuel_price = pricing['rack_price'] + customer_price_modifier
+    
+    fuel_cost = liters * customer_fuel_price
     federal_tax = liters * pricing['federal_carbon_tax']
     quebec_tax = liters * pricing['quebec_carbon_tax']
     
@@ -260,7 +263,9 @@ async def calculate_booking_price(liters: float):
     total = subtotal + gst + qst
     
     return {
-        'fuel_price_per_liter': pricing['fuel_price_per_liter'],
+        'rack_price': pricing['rack_price'],
+        'customer_price_modifier': customer_price_modifier,
+        'fuel_price_per_liter': customer_fuel_price,
         'federal_carbon_tax': pricing['federal_carbon_tax'],
         'quebec_carbon_tax': pricing['quebec_carbon_tax'],
         'gst_rate': pricing['gst_rate'],
