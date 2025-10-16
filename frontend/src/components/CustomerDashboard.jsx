@@ -507,7 +507,6 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                       </div>
                     </div>
                   </div>
-                  </div>
                 </div>
 
                 {/* Trucks */}
