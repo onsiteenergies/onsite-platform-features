@@ -434,11 +434,11 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                 <div className="border-t pt-4 mb-4">
                   <h4 className="font-semibold mb-2">Price Breakdown</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="text-gray-600">Fuel Cost ({booking.fuel_price_per_liter}/L):</div>
+                    <div className="text-gray-600">Fuel Cost (${booking.fuel_price_per_liter}/L × {booking.fuel_quantity_liters}L):</div>
                     <div className="text-right">${(booking.fuel_quantity_liters * booking.fuel_price_per_liter).toFixed(2)}</div>
-                    <div className="text-gray-600">Federal Carbon Tax:</div>
+                    <div className="text-gray-600">Federal Carbon Tax (${booking.federal_carbon_tax}/L × {booking.fuel_quantity_liters}L):</div>
                     <div className="text-right">${(booking.fuel_quantity_liters * booking.federal_carbon_tax).toFixed(2)}</div>
-                    <div className="text-gray-600">Quebec Carbon Tax:</div>
+                    <div className="text-gray-600">Quebec Carbon Tax (${booking.quebec_carbon_tax}/L × {booking.fuel_quantity_liters}L):</div>
                     <div className="text-right">${(booking.fuel_quantity_liters * booking.quebec_carbon_tax).toFixed(2)}</div>
                     <div className="text-gray-600">GST ({(booking.gst_rate * 100).toFixed(2)}%):</div>
                     <div className="text-right">${(booking.subtotal * booking.gst_rate).toFixed(2)}</div>
