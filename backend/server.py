@@ -214,7 +214,7 @@ async def get_pricing():
     if not pricing:
         # Create default pricing
         default_pricing = PricingConfig(
-            fuel_price_per_liter=1.50,
+            rack_price=1.50,
             federal_carbon_tax=0.14,
             quebec_carbon_tax=0.05,
             gst_rate=0.05,
