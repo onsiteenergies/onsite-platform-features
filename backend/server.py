@@ -155,11 +155,14 @@ class PricingConfig(BaseModel):
     updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class PricingConfigUpdate(BaseModel):
-    fuel_price_per_liter: Optional[float] = None
+    rack_price: Optional[float] = None
     federal_carbon_tax: Optional[float] = None
     quebec_carbon_tax: Optional[float] = None
     gst_rate: Optional[float] = None
     qst_rate: Optional[float] = None
+
+class CustomerPriceModifier(BaseModel):
+    price_modifier: float  # +/- per liter on top of rack price
 
 # Auth Routes
 @api_router.post("/auth/register", response_model=User)
