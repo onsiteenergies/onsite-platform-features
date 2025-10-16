@@ -441,12 +441,12 @@ export default function AdminDashboard({ user, token, onLogout }) {
                             <div className="mt-2">
                               <span className="text-sm text-gray-700">Rack Price Adjustment: </span>
                               <span className={`font-semibold ${customer.price_modifier >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {customer.price_modifier >= 0 ? '+' : ''}{customer.price_modifier.toFixed(3)}/L
+                                {customer.price_modifier >= 0 ? '+' : ''}{customer.price_modifier.toFixed(4)}/L
                               </span>
                             </div>
                             {pricing && (
                               <p className="text-xs text-gray-500 mt-1">
-                                Customer's fuel price: ${(pricing.rack_price + customer.price_modifier).toFixed(3)}/L
+                                Customer's fuel price: ${(pricing.rack_price + customer.price_modifier).toFixed(4)}/L
                               </p>
                             )}
                           </div>
@@ -485,7 +485,7 @@ export default function AdminDashboard({ user, token, onLogout }) {
                           <Input
                             data-testid="customer-price-modifier"
                             type="number"
-                            step="0.001"
+                            step="0.0001"
                             value={selectedCustomer.price_modifier}
                             onChange={(e) => setSelectedCustomer({ ...selectedCustomer, price_modifier: e.target.value })}
                             required
@@ -495,7 +495,7 @@ export default function AdminDashboard({ user, token, onLogout }) {
                           </p>
                           {pricing && (
                             <p className="text-sm text-blue-600 mt-2 font-semibold">
-                              Final Price: ${(pricing.rack_price + parseFloat(selectedCustomer.price_modifier || 0)).toFixed(3)}/L
+                              Final Price: ${(pricing.rack_price + parseFloat(selectedCustomer.price_modifier || 0)).toFixed(4)}/L
                             </p>
                           )}
                         </div>
