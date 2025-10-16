@@ -174,7 +174,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">FuelTrack</h1>
                 <p className="text-sm text-gray-600">Welcome, {user.name}</p>
-                {pricing && (
+                {pricing && pricing.rack_price !== undefined && user.price_modifier !== undefined && (
                   <div className="flex items-center space-x-4 mt-1">
                     <div className="flex items-center space-x-2 text-xs">
                       <span className="text-gray-500">Daily Rack Price:</span>
