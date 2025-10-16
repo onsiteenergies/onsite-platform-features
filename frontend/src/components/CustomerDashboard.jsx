@@ -441,17 +441,17 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                         <div className="text-sm text-blue-800 space-y-1">
                           <div className="flex justify-between">
                             <span>Rack Price (Daily Refinery Rate):</span>
-                            <span className="font-medium">${booking.rack_price.toFixed(3)}/L</span>
+                            <span className="font-medium">${booking.rack_price.toFixed(4)}/L</span>
                           </div>
                           <div className="flex justify-between">
                             <span>Rack Price Adjustment:</span>
                             <span className={`font-medium ${booking.customer_price_modifier >= 0 ? 'text-green-700' : 'text-red-700'}`}>
-                              {booking.customer_price_modifier >= 0 ? '+' : ''}${booking.customer_price_modifier.toFixed(3)}/L
+                              {booking.customer_price_modifier >= 0 ? '+' : ''}${booking.customer_price_modifier.toFixed(4)}/L
                             </span>
                           </div>
                           <div className="flex justify-between border-t border-blue-200 pt-1 mt-1">
                             <span className="font-semibold">Your Fuel Price:</span>
-                            <span className="font-bold text-blue-900">${booking.fuel_price_per_liter.toFixed(3)}/L</span>
+                            <span className="font-bold text-blue-900">${booking.fuel_price_per_liter.toFixed(4)}/L</span>
                           </div>
                         </div>
                       </div>
@@ -461,21 +461,21 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-700">
-                          <span className="font-medium">Fuel Price:</span> ${booking.fuel_price_per_liter.toFixed(3)}/L × {booking.fuel_quantity_liters}L
+                          <span className="font-medium">Fuel Price:</span> ${booking.fuel_price_per_liter.toFixed(4)}/L × {booking.fuel_quantity_liters}L
                         </span>
                         <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.fuel_price_per_liter).toFixed(2)}</span>
                       </div>
 
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-700">
-                          <span className="font-medium">Federal Carbon Tax:</span> ${booking.federal_carbon_tax.toFixed(3)}/L × {booking.fuel_quantity_liters}L
+                          <span className="font-medium">Federal Carbon Tax:</span> ${booking.federal_carbon_tax.toFixed(4)}/L × {booking.fuel_quantity_liters}L
                         </span>
                         <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.federal_carbon_tax).toFixed(2)}</span>
                       </div>
 
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-700">
-                          <span className="font-medium">Quebec Carbon Tax:</span> ${booking.quebec_carbon_tax.toFixed(3)}/L × {booking.fuel_quantity_liters}L
+                          <span className="font-medium">Quebec Carbon Tax:</span> ${booking.quebec_carbon_tax.toFixed(4)}/L × {booking.fuel_quantity_liters}L
                         </span>
                         <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.quebec_carbon_tax).toFixed(2)}</span>
                       </div>
@@ -496,7 +496,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
 
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-700">
-                          <span className="font-medium">QST:</span> {(booking.qst_rate * 100).toFixed(3)}% on subtotal
+                          <span className="font-medium">QST:</span> {(booking.qst_rate * 100).toFixed(4)}% on subtotal
                         </span>
                         <span className="font-semibold text-gray-900">${(booking.subtotal * booking.qst_rate).toFixed(2)}</span>
                       </div>
