@@ -279,7 +279,9 @@ async def calculate_booking_price(liters: float, customer_price_modifier: float 
 # Booking Routes
 @api_router.post("/bookings", response_model=Booking)
 async def create_booking(booking_data: BookingCreate, current_user: dict = Depends(get_current_user)):
-    price_info = await calculate_booking_price(booking_data.fuel_quantity_liters)
+    # Get customer's price modifier
+    customer_price_modifier = current_user.get('price_modifier', 0.0)
+    price_info = await calculate_booking_price(booking_data.fuel_quantity_liters, customer_price_modifier)
     
     booking = Booking(
         user_id=current_user['id'],
