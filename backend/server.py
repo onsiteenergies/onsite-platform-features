@@ -147,7 +147,7 @@ class DeliveryLogCreate(BaseModel):
 class PricingConfig(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    fuel_price_per_liter: float
+    rack_price: float  # Daily base rate from pipeline
     federal_carbon_tax: float
     quebec_carbon_tax: float
     gst_rate: float = 0.05  # 5%
