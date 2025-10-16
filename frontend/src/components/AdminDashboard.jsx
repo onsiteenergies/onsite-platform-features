@@ -226,6 +226,7 @@ export default function AdminDashboard({ user, token, onLogout }) {
             <TabsList className="mb-6">
               <TabsTrigger value="bookings" data-testid="tab-bookings">Bookings</TabsTrigger>
               <TabsTrigger value="logs" data-testid="tab-logs">Delivery Logs</TabsTrigger>
+              <TabsTrigger value="customers" data-testid="tab-customers">Customers</TabsTrigger>
               <TabsTrigger value="pricing" data-testid="tab-pricing">Pricing</TabsTrigger>
             </TabsList>
 
