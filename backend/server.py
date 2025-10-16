@@ -102,6 +102,8 @@ class Booking(BaseModel):
     multiple_locations: Optional[List[str]] = None
     trucks: List[TruckDetails]
     status: str = "pending"  # pending, confirmed, in_transit, delivered, cancelled
+    rack_price: float
+    customer_price_modifier: float
     fuel_price_per_liter: float
     federal_carbon_tax: float
     quebec_carbon_tax: float
