@@ -440,7 +440,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                         <div className="text-sm font-semibold text-blue-900 mb-2">Fuel Price Calculation:</div>
                         <div className="text-sm text-blue-800 space-y-1">
                           <div className="flex justify-between">
-                            <span>Rack Price (Daily Pipeline Rate):</span>
+                            <span>Rack Price (Daily Refinery Rate):</span>
                             <span className="font-medium">${booking.rack_price.toFixed(3)}/L</span>
                           </div>
                           <div className="flex justify-between">
