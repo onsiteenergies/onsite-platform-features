@@ -77,6 +77,30 @@ export default function CustomerDashboard({ user, token, onLogout }) {
     }
   };
 
+  const handleExportPDF = async (bookingId) => {
+    try {
+      const response = await axios.get(
+        `${API}/invoices/${bookingId}/export-pdf`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob'
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `invoice_${bookingId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      toast.success('Invoice exported successfully');
+    } catch (error) {
+      toast.error('Failed to export invoice');
+    }
+  };
+
   const handleCreateBooking = async (e) => {
     e.preventDefault();
     try {
