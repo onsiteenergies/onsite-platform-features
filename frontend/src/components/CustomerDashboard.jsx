@@ -553,26 +553,36 @@ export default function CustomerDashboard({ user, token, onLogout }) {
 
                     {/* Line Items */}
                     <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-700">
-                          <span className="font-medium">Fuel Price:</span> ${booking.fuel_price_per_liter.toFixed(4)}/L × {booking.fuel_quantity_liters}L
-                        </span>
-                        <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.fuel_price_per_liter).toFixed(2)}</span>
-                      </div>
+                      {/* Use dispensed amount if available, otherwise use fuel_quantity_liters */}
+                      {(() => {
+                        const quantityForPrice = booking.dispensed_amount || booking.fuel_quantity_liters;
+                        const quantityLabel = booking.dispensed_amount ? `${quantityForPrice}L (Dispensed)` : `${quantityForPrice}L`;
+                        
+                        return (
+                          <>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-700">
+                                <span className="font-medium">Fuel Price:</span> ${booking.fuel_price_per_liter.toFixed(4)}/L × {quantityLabel}
+                              </span>
+                              <span className="font-semibold text-gray-900">${(quantityForPrice * booking.fuel_price_per_liter).toFixed(2)}</span>
+                            </div>
 
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-700">
-                          <span className="font-medium">Federal Carbon Tax:</span> ${booking.federal_carbon_tax.toFixed(4)}/L × {booking.fuel_quantity_liters}L
-                        </span>
-                        <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.federal_carbon_tax).toFixed(2)}</span>
-                      </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-700">
+                                <span className="font-medium">Federal Carbon Tax:</span> ${booking.federal_carbon_tax.toFixed(4)}/L × {quantityLabel}
+                              </span>
+                              <span className="font-semibold text-gray-900">${(quantityForPrice * booking.federal_carbon_tax).toFixed(2)}</span>
+                            </div>
 
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-700">
-                          <span className="font-medium">Quebec Carbon Tax:</span> ${booking.quebec_carbon_tax.toFixed(4)}/L × {booking.fuel_quantity_liters}L
-                        </span>
-                        <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.quebec_carbon_tax).toFixed(2)}</span>
-                      </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-700">
+                                <span className="font-medium">Quebec Carbon Tax:</span> ${booking.quebec_carbon_tax.toFixed(4)}/L × {quantityLabel}
+                              </span>
+                              <span className="font-semibold text-gray-900">${(quantityForPrice * booking.quebec_carbon_tax).toFixed(2)}</span>
+                            </div>
+                          </>
+                        );
+                      })()}
 
                       <div className="flex justify-between text-sm pt-2 border-t">
                         <span className="text-gray-700">
