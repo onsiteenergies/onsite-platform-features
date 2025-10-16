@@ -391,6 +391,35 @@ async def get_stats(current_user: dict = Depends(get_current_user)):
         "total_liters_delivered": round(total_liters, 2)
     }
 
+# Customer management routes for admin
+@api_router.get("/customers", response_model=List[User])
+async def get_customers(current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    customers = await db.users.find({"role": "customer"}, {"_id": 0, "password": 0}).to_list(1000)
+    return customers
+
+@api_router.put("/customers/{customer_id}/pricing")
+async def update_customer_pricing(
+    customer_id: str, 
+    pricing_update: CustomerPriceModifier, 
+    current_user: dict = Depends(get_current_user)
+):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.users.update_one(
+        {"id": customer_id, "role": "customer"}, 
+        {"$set": {"price_modifier": pricing_update.price_modifier}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    customer = await db.users.find_one({"id": customer_id}, {"_id": 0, "password": 0})
+    return customer
+
 # Include the router in the main app
 app.include_router(api_router)
 
