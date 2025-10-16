@@ -655,8 +655,8 @@ async def export_invoice_pdf(booking_id: str, current_user: dict = Depends(get_c
     doc.build(elements)
     buffer.seek(0)
     
-    return FileResponse(
-        io.BytesIO(buffer.read()),
+    return Response(
+        content=buffer.read(),
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename=invoice_{booking_id}.pdf"}
     )
