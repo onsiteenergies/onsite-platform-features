@@ -444,7 +444,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                             <span className="font-medium">${booking.rack_price.toFixed(3)}/L</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Customer Price Modifier:</span>
+                            <span>Rack Price Adjustment:</span>
                             <span className={`font-medium ${booking.customer_price_modifier >= 0 ? 'text-green-700' : 'text-red-700'}`}>
                               {booking.customer_price_modifier >= 0 ? '+' : ''}${booking.customer_price_modifier.toFixed(3)}/L
                             </span>
@@ -461,7 +461,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-700">
-                          <span className="font-medium">Fuel Cost:</span> ${booking.fuel_price_per_liter.toFixed(3)}/L × {booking.fuel_quantity_liters}L
+                          <span className="font-medium">Fuel Price:</span> ${booking.fuel_price_per_liter.toFixed(3)}/L × {booking.fuel_quantity_liters}L
                         </span>
                         <span className="font-semibold text-gray-900">${(booking.fuel_quantity_liters * booking.fuel_price_per_liter).toFixed(2)}</span>
                       </div>
