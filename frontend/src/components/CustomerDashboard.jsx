@@ -174,6 +174,24 @@ export default function CustomerDashboard({ user, token, onLogout }) {
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">FuelTrack</h1>
                 <p className="text-sm text-gray-600">Welcome, {user.name}</p>
+                {pricing && (
+                  <div className="flex items-center space-x-4 mt-1">
+                    <div className="flex items-center space-x-2 text-xs">
+                      <span className="text-gray-500">Daily Rack Price:</span>
+                      <span className="font-semibold text-blue-600">${pricing.rack_price.toFixed(4)}/L</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-xs">
+                      <span className="text-gray-500">Your Adjustment:</span>
+                      <span className={`font-semibold ${user.price_modifier >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {user.price_modifier >= 0 ? '+' : ''}${user.price_modifier.toFixed(4)}/L
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-xs">
+                      <span className="text-gray-500">Your Price:</span>
+                      <span className="font-bold text-green-700">${(pricing.rack_price + user.price_modifier).toFixed(4)}/L</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             <Button
