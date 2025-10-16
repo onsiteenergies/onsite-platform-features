@@ -420,9 +420,9 @@ export default function AdminDashboard({ user, token, onLogout }) {
               <div className="space-y-4">
                 <h3 className="text-xl font-bold mb-4">Customer Pricing Management</h3>
                 <div className="bg-green-50 p-4 rounded-lg mb-6">
-                  <p className="text-sm text-green-900 font-semibold mb-2">Customer Price Modifiers</p>
-                  <p className="text-xs text-green-700">Set +/- per liter adjustments for each customer. Final price = Rack Price + Customer Modifier</p>
-                  <p className="text-xs text-green-700 mt-1">Example: Rack $1.50/L + Modifier $0.10/L = Customer pays $1.60/L</p>
+                  <p className="text-sm text-green-900 font-semibold mb-2">Rack Price Adjustments</p>
+                  <p className="text-xs text-green-700">Set +/- per liter adjustments for each customer. Final price = Rack Price + Rack Price Adjustment</p>
+                  <p className="text-xs text-green-700 mt-1">Example: Rack $1.50/L + Adjustment $0.10/L = Customer pays $1.60/L</p>
                 </div>
 
                 {customers.length === 0 ? (
@@ -439,7 +439,7 @@ export default function AdminDashboard({ user, token, onLogout }) {
                             <h4 className="font-bold text-lg">{customer.name}</h4>
                             <p className="text-sm text-gray-600">{customer.email}</p>
                             <div className="mt-2">
-                              <span className="text-sm text-gray-700">Price Modifier: </span>
+                              <span className="text-sm text-gray-700">Rack Price Adjustment: </span>
                               <span className={`font-semibold ${customer.price_modifier >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                                 {customer.price_modifier >= 0 ? '+' : ''}{customer.price_modifier.toFixed(3)}/L
                               </span>
