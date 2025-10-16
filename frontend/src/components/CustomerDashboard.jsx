@@ -400,10 +400,10 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                     <h3 className="text-xl font-bold text-gray-900 mb-1">
                       {booking.fuel_quantity_liters}L {booking.fuel_type}
                     </h3>
-                    <p className="text-gray-600 flex items-center">
+                    <div className="text-gray-600 flex items-center">
                       <MapPin className="w-4 h-4 mr-1" />
                       {booking.delivery_address}
-                    </p>
+                    </div>
                   </div>
                   <div className="text-right">
                     {getStatusBadge(booking.status)}
