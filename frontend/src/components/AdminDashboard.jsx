@@ -264,23 +264,49 @@ export default function AdminDashboard({ user, token, onLogout }) {
                       </div>
                     </div>
 
-                    <div className="border-t pt-3">
-                      <Label>Update Status</Label>
-                      <Select
-                        value={booking.status}
-                        onValueChange={(value) => handleUpdateStatus(booking.id, value)}
-                      >
-                        <SelectTrigger data-testid={`booking-status-${booking.id}`}>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="confirmed">Confirmed</SelectItem>
-                          <SelectItem value="in_transit">In Transit</SelectItem>
-                          <SelectItem value="delivered">Delivered</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    {booking.ordered_amount && booking.dispensed_amount && (
+                      <div className="grid grid-cols-2 gap-4 mb-3 text-sm bg-blue-50 p-2 rounded">
+                        <div>
+                          <span className="text-gray-600">Ordered:</span>
+                          <span className="font-medium ml-2">{booking.ordered_amount}L</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">Dispensed:</span>
+                          <span className="font-medium ml-2">{booking.dispensed_amount}L</span>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="border-t pt-3 space-y-3">
+                      <div>
+                        <Label>Update Status</Label>
+                        <Select
+                          value={booking.status}
+                          onValueChange={(value) => handleUpdateStatus(booking.id, value)}
+                        >
+                          <SelectTrigger data-testid={`booking-status-${booking.id}`}>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="confirmed">Confirmed</SelectItem>
+                            <SelectItem value="in_transit">In Transit</SelectItem>
+                            <SelectItem value="delivered">Delivered</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Invoice Management */}
+                      {(booking.status === 'delivered' || booking.status === 'in_transit') && (
+                        <div>
+                          <InvoiceManagement 
+                            booking={booking} 
+                            token={token} 
+                            onUpdate={fetchData}
+                          />
+                        </div>
+                      )}
                     </div>
                   </Card>
                 ))}
