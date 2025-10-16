@@ -125,6 +125,9 @@ class Booking(BaseModel):
     qst_rate: float
     subtotal: float
     total_price: float
+    ordered_amount: Optional[float] = None  # Ordered liters
+    dispensed_amount: Optional[float] = None  # Actually dispensed liters
+    invoice_images: Optional[List[str]] = []  # List of image file paths
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
@@ -141,6 +144,12 @@ class BookingCreate(BaseModel):
 class BookingUpdate(BaseModel):
     status: Optional[str] = None
     trucks: Optional[List[TruckDetails]] = None
+    ordered_amount: Optional[float] = None
+    dispensed_amount: Optional[float] = None
+
+class InvoiceUpdate(BaseModel):
+    ordered_amount: Optional[float] = None
+    dispensed_amount: Optional[float] = None
 
 class DeliveryLog(BaseModel):
     model_config = ConfigDict(extra="ignore")
