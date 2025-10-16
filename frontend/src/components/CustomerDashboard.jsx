@@ -16,6 +16,7 @@ const API = `${BACKEND_URL}/api`;
 export default function CustomerDashboard({ user, token, onLogout }) {
   const [bookings, setBookings] = useState([]);
   const [logs, setLogs] = useState({});
+  const [pricing, setPricing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showNewBooking, setShowNewBooking] = useState(false);
   const [newBooking, setNewBooking] = useState({
@@ -31,8 +32,21 @@ export default function CustomerDashboard({ user, token, onLogout }) {
   const [locationInput, setLocationInput] = useState('');
 
   useEffect(() => {
-    fetchBookings();
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    await Promise.all([fetchBookings(), fetchPricing()]);
+  };
+
+  const fetchPricing = async () => {
+    try {
+      const response = await axios.get(`${API}/pricing`);
+      setPricing(response.data);
+    } catch (error) {
+      console.error('Failed to fetch pricing:', error);
+    }
+  };
 
   const fetchBookings = async () => {
     try {
