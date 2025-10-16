@@ -111,6 +111,22 @@ export default function AdminDashboard({ user, token, onLogout }) {
     }
   };
 
+  const handleUpdateCustomerPricing = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(
+        `${API}/customers/${selectedCustomer.id}/pricing`,
+        { price_modifier: parseFloat(selectedCustomer.price_modifier) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success('Customer pricing updated successfully');
+      setShowCustomerPricing(false);
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to update customer pricing');
+    }
+  };
+
   const getStatusBadge = (status) => {
     return <span className={`status-badge status-${status}`}>{status.replace('_', ' ').toUpperCase()}</span>;
   };
