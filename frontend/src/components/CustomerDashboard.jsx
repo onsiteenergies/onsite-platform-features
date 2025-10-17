@@ -516,6 +516,15 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                                   {equip.capacity && (
                                     <p className="text-sm text-blue-600">Capacity: {equip.capacity}L</p>
                                   )}
+                                  {equip.location_name && (
+                                    <div className="flex items-center mt-1 text-xs text-green-700 bg-green-50 px-2 py-1 rounded inline-flex">
+                                      <MapPin className="w-3 h-3 mr-1" />
+                                      <span className="font-medium">{equip.location_name}</span>
+                                    </div>
+                                  )}
+                                  {equip.location_address && (
+                                    <p className="text-xs text-gray-500 mt-1">📍 {equip.location_address}</p>
+                                  )}
                                   {inOrder && (
                                     <p className="text-sm text-green-600 font-medium mt-1">
                                       ✓ In Order: {inOrder.quantity}L
