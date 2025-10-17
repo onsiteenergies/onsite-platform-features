@@ -131,7 +131,8 @@ export default function TanksAndEquipment({ token, onClose }) {
     setEquipmentForm({
       name: equip.name,
       unit_number: equip.unit_number,
-      license_plate: equip.license_plate
+      license_plate: equip.license_plate,
+      capacity: equip.capacity || ''
     });
     setShowEquipmentDialog(true);
   };
