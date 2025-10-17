@@ -510,6 +510,78 @@ async def update_customer_pricing(
     customer = await db.users.find_one({"id": customer_id}, {"_id": 0, "password": 0})
     return customer
 
+
+# Delivery Sites Management
+class DeliverySiteCreate(BaseModel):
+    name: str
+    address: str
+
+@api_router.get("/delivery-sites")
+async def get_delivery_sites(current_user: dict = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user['id']}, {"_id": 0})
+    return user.get('delivery_sites', [])
+
+@api_router.post("/delivery-sites")
+async def add_delivery_site(site_data: DeliverySiteCreate, current_user: dict = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user['id']}, {"_id": 0})
+    
+    delivery_sites = user.get('delivery_sites', [])
+    new_site = {
+        "id": str(uuid.uuid4()),
+        "name": site_data.name,
+        "address": site_data.address
+    }
+    delivery_sites.append(new_site)
+    
+    await db.users.update_one(
+        {"id": current_user['id']},
+        {"$set": {"delivery_sites": delivery_sites}}
+    )
+    
+    return new_site
+
+@api_router.put("/delivery-sites/{site_id}")
+async def update_delivery_site(site_id: str, site_data: DeliverySiteCreate, current_user: dict = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user['id']}, {"_id": 0})
+    
+    delivery_sites = user.get('delivery_sites', [])
+    site_found = False
+    
+    for site in delivery_sites:
+        if site['id'] == site_id:
+            site['name'] = site_data.name
+            site['address'] = site_data.address
+            site_found = True
+            break
+    
+    if not site_found:
+        raise HTTPException(status_code=404, detail="Delivery site not found")
+    
+    await db.users.update_one(
+        {"id": current_user['id']},
+        {"$set": {"delivery_sites": delivery_sites}}
+    )
+    
+    return {"id": site_id, "name": site_data.name, "address": site_data.address}
+
+@api_router.delete("/delivery-sites/{site_id}")
+async def delete_delivery_site(site_id: str, current_user: dict = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user['id']}, {"_id": 0})
+    
+    delivery_sites = user.get('delivery_sites', [])
+    original_length = len(delivery_sites)
+    delivery_sites = [site for site in delivery_sites if site['id'] != site_id]
+    
+    if len(delivery_sites) == original_length:
+        raise HTTPException(status_code=404, detail="Delivery site not found")
+    
+    await db.users.update_one(
+        {"id": current_user['id']},
+        {"$set": {"delivery_sites": delivery_sites}}
+    )
+    
+    return {"message": "Delivery site deleted successfully"}
+
 # Fuel Tanks Management
 @api_router.get("/fuel-tanks")
 async def get_fuel_tanks(current_user: dict = Depends(get_current_user)):
