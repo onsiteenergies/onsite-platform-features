@@ -108,6 +108,7 @@ class CustomerEquipment(BaseModel):
     name: str
     unit_number: str
     license_plate: str
+    capacity: Optional[float] = None
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class FuelTankCreate(BaseModel):
@@ -119,6 +120,7 @@ class CustomerEquipmentCreate(BaseModel):
     name: str
     unit_number: str
     license_plate: str
+    capacity: Optional[float] = None
 
 class Booking(BaseModel):
     model_config = ConfigDict(extra="ignore")
