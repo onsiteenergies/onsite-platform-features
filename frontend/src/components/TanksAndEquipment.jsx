@@ -231,9 +231,10 @@ export default function TanksAndEquipment({ token, onClose }) {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="tanks">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="tanks" data-testid="tanks-tab">Fuel Tanks</TabsTrigger>
           <TabsTrigger value="equipment" data-testid="equipment-tab">Equipment/Trucks</TabsTrigger>
+          <TabsTrigger value="sites" data-testid="sites-tab">Delivery Sites</TabsTrigger>
         </TabsList>
 
         {/* Fuel Tanks Tab */}
