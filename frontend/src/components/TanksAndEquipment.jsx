@@ -229,7 +229,7 @@ export default function TanksAndEquipment({ token, onClose }) {
               <Button
                 onClick={() => {
                   setEditingEquipment(null);
-                  setEquipmentForm({ name: '', unit_number: '', license_plate: '' });
+                  setEquipmentForm({ name: '', unit_number: '', license_plate: '', capacity: '' });
                   setShowEquipmentDialog(true);
                 }}
                 data-testid="add-equipment-button"
