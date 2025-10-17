@@ -144,9 +144,9 @@ export default function CustomerDashboard({ user, token, onLogout }) {
         preferred_time: '',
         special_instructions: '',
         multiple_locations: [],
-        tank_id: '',
+        tank_id: null,
         tank_name: '',
-        equipment_id: '',
+        equipment_id: null,
         equipment_name: ''
       });
       fetchBookings();
