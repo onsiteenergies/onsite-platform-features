@@ -559,14 +559,14 @@ export default function TanksAndEquipment({ token, onClose }) {
             <div>
               <Label>Location/Site</Label>
               <Select 
-                value={equipmentForm.location_id || ""} 
+                value={equipmentForm.location_id || "none"} 
                 onValueChange={(value) => handleLocationSelect(value, 'equipment')}
               >
                 <SelectTrigger data-testid="equipment-location">
                   <SelectValue placeholder="Select delivery site (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No location</SelectItem>
+                  <SelectItem value="none">No location</SelectItem>
                   {deliverySites.map((site) => (
                     <SelectItem key={site.id} value={site.id}>
                       {site.name} - {site.address}
