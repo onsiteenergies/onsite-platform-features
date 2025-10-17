@@ -543,6 +543,11 @@ export default function AdminDashboard({ user, token, onLogout }) {
               </div>
             </TabsContent>
 
+            {/* Resources Tab */}
+            <TabsContent value="resources">
+              <AdminResourcesManagement token={token} />
+            </TabsContent>
+
             {/* Pricing Tab */}
             <TabsContent value="pricing">
               <div className="max-w-2xl">
