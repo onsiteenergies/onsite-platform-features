@@ -20,7 +20,7 @@ export default function TanksAndEquipment({ token, onClose }) {
   const [editingTank, setEditingTank] = useState(null);
   const [editingEquipment, setEditingEquipment] = useState(null);
   const [tankForm, setTankForm] = useState({ name: '', identifier: '', capacity: '' });
-  const [equipmentForm, setEquipmentForm] = useState({ name: '', unit_number: '', license_plate: '' });
+  const [equipmentForm, setEquipmentForm] = useState({ name: '', unit_number: '', license_plate: '', capacity: '' });
 
   useEffect(() => {
     fetchData();
