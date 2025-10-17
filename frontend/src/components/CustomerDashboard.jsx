@@ -18,6 +18,8 @@ export default function CustomerDashboard({ user, token, onLogout }) {
   const [bookings, setBookings] = useState([]);
   const [logs, setLogs] = useState({});
   const [pricing, setPricing] = useState(null);
+  const [tanks, setTanks] = useState([]);
+  const [equipment, setEquipment] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNewBooking, setShowNewBooking] = useState(false);
   const [showTanksEquipment, setShowTanksEquipment] = useState(false);
@@ -28,7 +30,11 @@ export default function CustomerDashboard({ user, token, onLogout }) {
     preferred_date: '',
     preferred_time: '',
     special_instructions: '',
-    multiple_locations: []
+    multiple_locations: [],
+    tank_id: '',
+    tank_name: '',
+    equipment_id: '',
+    equipment_name: ''
   });
   const [locationInput, setLocationInput] = useState('');
 
