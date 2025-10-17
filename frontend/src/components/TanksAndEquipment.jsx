@@ -458,7 +458,18 @@ export default function TanksAndEquipment({ token, onClose }) {
               )}
             </div>
             <div className="flex justify-end space-x-2">
-              <Button type="button" variant="outline" onClick={() => setShowTankDialog(false)}>
+              <Button type="button" variant="outline" onClick={() => {
+                setShowTankDialog(false);
+                setEditingTank(null);
+                setTankForm({ 
+                  name: '', 
+                  identifier: '', 
+                  capacity: '',
+                  location_id: '',
+                  location_name: '',
+                  location_address: ''
+                });
+              }}>
                 Cancel
               </Button>
               <Button type="submit" data-testid="save-tank">
