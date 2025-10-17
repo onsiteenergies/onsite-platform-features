@@ -333,11 +333,33 @@ async def create_booking(booking_data: BookingCreate, current_user: dict = Depen
     customer_price_modifier = current_user.get('price_modifier', 0.0)
     price_info = await calculate_booking_price(booking_data.fuel_quantity_liters, customer_price_modifier)
     
+    # Fetch tank details if selected_tank_ids provided
+    selected_tanks = []
+    if booking_data.selected_tank_ids:
+        tanks_cursor = db.fuel_tanks.find(
+            {"id": {"$in": booking_data.selected_tank_ids}, "user_id": current_user['id']},
+            {"_id": 0}
+        )
+        selected_tanks = await tanks_cursor.to_list(length=None)
+    
+    # Fetch equipment details if selected_equipment_ids provided
+    selected_equipment = []
+    if booking_data.selected_equipment_ids:
+        equipment_cursor = db.customer_equipment.find(
+            {"id": {"$in": booking_data.selected_equipment_ids}, "user_id": current_user['id']},
+            {"_id": 0}
+        )
+        selected_equipment = await equipment_cursor.to_list(length=None)
+    
+    # Create booking dict
+    booking_dict = booking_data.model_dump(exclude={'selected_tank_ids', 'selected_equipment_ids'})
     booking = Booking(
         user_id=current_user['id'],
         user_name=current_user['name'],
         user_email=current_user['email'],
-        **booking_data.model_dump(),
+        **booking_dict,
+        selected_tanks=selected_tanks,
+        selected_equipment=selected_equipment,
         **price_info
     )
     
