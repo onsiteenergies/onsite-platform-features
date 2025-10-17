@@ -356,68 +356,6 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                   </div>
                 </div>
 
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-center mb-3">
-                    <Label className="text-lg">Trucks</Label>
-                    <Button type="button" onClick={addTruck} size="sm" data-testid="add-truck-button">
-                      <Plus className="w-4 h-4 mr-1" /> Add Truck
-                    </Button>
-                  </div>
-
-                  {newBooking.trucks.map((truck, idx) => (
-                    <div key={idx} className="border rounded-lg p-4 mb-3 bg-gray-50">
-                      <div className="flex justify-between items-center mb-3">
-                        <h4 className="font-semibold">Truck {idx + 1}</h4>
-                        {newBooking.trucks.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeTruck(idx)}
-                            data-testid={`remove-truck-${idx}`}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-3 gap-3">
-                        <div>
-                          <Label>License Plate *</Label>
-                          <Input
-                            data-testid={`truck-${idx}-plate`}
-                            value={truck.license_plate}
-                            onChange={(e) => updateTruck(idx, 'license_plate', e.target.value)}
-                            placeholder="ABC-1234"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <Label>Driver Name *</Label>
-                          <Input
-                            data-testid={`truck-${idx}-driver`}
-                            value={truck.driver_name}
-                            onChange={(e) => updateTruck(idx, 'driver_name', e.target.value)}
-                            placeholder="John Doe"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <Label>Capacity (L) *</Label>
-                          <Input
-                            data-testid={`truck-${idx}-capacity`}
-                            type="number"
-                            step="0.01"
-                            value={truck.capacity_liters}
-                            onChange={(e) => updateTruck(idx, 'capacity_liters', e.target.value)}
-                            placeholder="5000"
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
                 <div className="flex justify-end space-x-2 pt-4">
                   <Button type="button" variant="outline" onClick={() => setShowNewBooking(false)}>
                     Cancel
