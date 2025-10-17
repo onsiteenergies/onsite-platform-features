@@ -61,7 +61,7 @@ export default function TanksAndEquipment({ token, onClose }) {
   };
 
   const handleLocationSelect = (locationId, formType) => {
-    if (!locationId || locationId === "") {
+    if (!locationId || locationId === "" || locationId === "none") {
       // Clear location
       if (formType === 'tank') {
         setTankForm({
