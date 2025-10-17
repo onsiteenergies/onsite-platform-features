@@ -108,11 +108,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
       const bookingData = {
         ...newBooking,
         fuel_quantity_liters: parseFloat(newBooking.fuel_quantity_liters),
-        multiple_locations: newBooking.multiple_locations.length > 0 ? newBooking.multiple_locations : null,
-        trucks: newBooking.trucks.map(t => ({
-          ...t,
-          capacity_liters: parseFloat(t.capacity_liters)
-        }))
+        multiple_locations: newBooking.multiple_locations.length > 0 ? newBooking.multiple_locations : null
       };
 
       await axios.post(`${API}/bookings`, bookingData, {
