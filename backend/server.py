@@ -120,11 +120,6 @@ class CustomerEquipmentCreate(BaseModel):
     unit_number: str
     license_plate: str
 
-class TruckDetails(BaseModel):
-    license_plate: str
-    driver_name: str
-    capacity_liters: float
-
 class Booking(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
