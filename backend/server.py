@@ -162,11 +162,9 @@ class BookingCreate(BaseModel):
     preferred_time: str
     special_instructions: Optional[str] = None
     multiple_locations: Optional[List[str]] = None
-    trucks: List[TruckDetails]
 
 class BookingUpdate(BaseModel):
     status: Optional[str] = None
-    trucks: Optional[List[TruckDetails]] = None
     ordered_amount: Optional[float] = None
     dispensed_amount: Optional[float] = None
 
