@@ -220,18 +220,40 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                 )}
               </div>
             </div>
-            <Button
-              onClick={onLogout}
-              variant="outline"
-              data-testid="logout-button"
-              className="flex items-center space-x-2"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Logout</span>
-            </Button>
+            <div className="flex space-x-2">
+              <Button
+                onClick={() => setShowTanksEquipment(true)}
+                variant="outline"
+                data-testid="manage-tanks-button"
+                className="flex items-center space-x-2"
+              >
+                <Settings className="w-4 h-4" />
+                <span>Tanks & Equipment</span>
+              </Button>
+              <Button
+                onClick={onLogout}
+                variant="outline"
+                data-testid="logout-button"
+                className="flex items-center space-x-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Tanks & Equipment Dialog */}
+      <Dialog open={showTanksEquipment} onOpenChange={setShowTanksEquipment}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" aria-describedby="tanks-equipment-description">
+          <DialogHeader>
+            <DialogTitle>Manage Tanks & Equipment</DialogTitle>
+          </DialogHeader>
+          <p id="tanks-equipment-description" className="sr-only">Manage your fuel tanks and equipment</p>
+          <TanksAndEquipment token={token} onClose={() => setShowTanksEquipment(false)} />
+        </DialogContent>
+      </Dialog>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
