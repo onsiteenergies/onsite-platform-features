@@ -161,6 +161,9 @@ class BookingCreate(BaseModel):
     preferred_time: str
     special_instructions: Optional[str] = None
     multiple_locations: Optional[List[str]] = None
+    selected_tank_ids: Optional[List[str]] = None
+    selected_equipment_ids: Optional[List[str]] = None
+    # Keep backward compatibility
     tank_id: Optional[str] = None
     tank_name: Optional[str] = None
     equipment_id: Optional[str] = None
