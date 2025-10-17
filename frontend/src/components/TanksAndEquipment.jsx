@@ -539,7 +539,7 @@ export default function TanksAndEquipment({ token, onClose }) {
             <div>
               <Label>Location/Site</Label>
               <Select 
-                value={equipmentForm.location_id} 
+                value={equipmentForm.location_id || ""} 
                 onValueChange={(value) => handleLocationSelect(value, 'equipment')}
               >
                 <SelectTrigger data-testid="equipment-location">
