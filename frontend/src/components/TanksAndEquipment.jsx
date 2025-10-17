@@ -254,6 +254,9 @@ export default function TanksAndEquipment({ token, onClose }) {
                         <h4 className="font-bold text-lg">{equip.name}</h4>
                         <p className="text-sm text-gray-600">Unit #: {equip.unit_number}</p>
                         <p className="text-sm text-gray-600">License: {equip.license_plate}</p>
+                        {equip.capacity && (
+                          <p className="text-sm text-gray-600">Capacity: {equip.capacity}L</p>
+                        )}
                       </div>
                       <div className="flex space-x-2">
                         <Button
