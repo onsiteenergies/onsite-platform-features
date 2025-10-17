@@ -136,10 +136,8 @@ class Booking(BaseModel):
     special_instructions: Optional[str] = None
     multiple_locations: Optional[List[str]] = None
     status: str = "pending"  # pending, confirmed, in_transit, delivered, cancelled
-    tank_id: Optional[str] = None
-    tank_name: Optional[str] = None
-    equipment_id: Optional[str] = None
-    equipment_name: Optional[str] = None
+    selected_tanks: Optional[List[dict]] = []  # List of {id, name, identifier, capacity}
+    selected_equipment: Optional[List[dict]] = []  # List of {id, name, unit_number, license_plate, capacity}
     rack_price: Optional[float] = None
     customer_price_modifier: Optional[float] = None
     fuel_price_per_liter: float
