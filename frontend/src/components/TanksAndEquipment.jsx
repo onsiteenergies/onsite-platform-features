@@ -374,6 +374,17 @@ export default function TanksAndEquipment({ token, onClose }) {
                 required
               />
             </div>
+            <div>
+              <Label>Maximum Capacity (Liters)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={equipmentForm.capacity}
+                onChange={(e) => setEquipmentForm({ ...equipmentForm, capacity: e.target.value })}
+                placeholder="e.g., 8000"
+                data-testid="equipment-capacity"
+              />
+            </div>
             <div className="flex justify-end space-x-2">
               <Button type="button" variant="outline" onClick={() => setShowEquipmentDialog(false)}>
                 Cancel
