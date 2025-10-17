@@ -20,9 +20,12 @@ export default function CustomerDashboard({ user, token, onLogout }) {
   const [pricing, setPricing] = useState(null);
   const [tanks, setTanks] = useState([]);
   const [equipment, setEquipment] = useState([]);
+  const [deliverySites, setDeliverySites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNewBooking, setShowNewBooking] = useState(false);
   const [showTanksEquipment, setShowTanksEquipment] = useState(false);
+  const [useCustomAddress, setUseCustomAddress] = useState(false);
+  const [selectedSiteId, setSelectedSiteId] = useState('');
   const [newBooking, setNewBooking] = useState({
     delivery_address: '',
     fuel_quantity_liters: '',
