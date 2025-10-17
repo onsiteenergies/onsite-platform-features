@@ -78,6 +78,11 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return user
 
 # Models
+class DeliverySite(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    address: str
+
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -85,6 +90,7 @@ class User(BaseModel):
     name: str
     role: str = "customer"  # customer or admin
     price_modifier: float = 0.0  # +/- per liter on top of rack price
+    delivery_sites: Optional[List[dict]] = []  # List of saved delivery addresses
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class UserRegister(BaseModel):
