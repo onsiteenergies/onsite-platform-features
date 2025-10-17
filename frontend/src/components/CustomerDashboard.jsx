@@ -353,6 +353,46 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                     />
                   </div>
 
+                  <div>
+                    <Label>Select Tank (Optional)</Label>
+                    <Select
+                      value={newBooking.tank_id}
+                      onValueChange={handleTankSelect}
+                    >
+                      <SelectTrigger data-testid="booking-tank">
+                        <SelectValue placeholder="Select a tank" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">None</SelectItem>
+                        {tanks.map((tank) => (
+                          <SelectItem key={tank.id} value={tank.id}>
+                            {tank.name} ({tank.identifier})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label>Select Equipment/Truck (Optional)</Label>
+                    <Select
+                      value={newBooking.equipment_id}
+                      onValueChange={handleEquipmentSelect}
+                    >
+                      <SelectTrigger data-testid="booking-equipment">
+                        <SelectValue placeholder="Select equipment" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">None</SelectItem>
+                        {equipment.map((equip) => (
+                          <SelectItem key={equip.id} value={equip.id}>
+                            {equip.name} ({equip.unit_number})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <div className="col-span-2">
                     <Label>Special Instructions</Label>
                     <Textarea
