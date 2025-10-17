@@ -9,8 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import { DollarSign, TrendingUp, Users, Package, Fuel, LogOut, FileText, Plus } from 'lucide-react';
+import { DollarSign, TrendingUp, Users, Package, Fuel, LogOut, FileText, Plus, Wrench } from 'lucide-react';
 import InvoiceManagement from '@/components/InvoiceManagement';
+import AdminResourcesManagement from '@/components/AdminResourcesManagement';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
