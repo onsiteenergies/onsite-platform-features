@@ -314,7 +314,7 @@ export default function TanksAndEquipment({ token, onClose }) {
               />
             </div>
             <div>
-              <Label>Capacity (Liters)</Label>
+              <Label>Maximum Capacity (Liters)</Label>
               <Input
                 type="number"
                 step="0.01"
