@@ -245,7 +245,14 @@ export default function TanksAndEquipment({ token, onClose }) {
               <Button
                 onClick={() => {
                   setEditingTank(null);
-                  setTankForm({ name: '', identifier: '', capacity: '' });
+                  setTankForm({ 
+                    name: '', 
+                    identifier: '', 
+                    capacity: '',
+                    location_id: '',
+                    location_name: '',
+                    location_address: ''
+                  });
                   setShowTankDialog(true);
                 }}
                 data-testid="add-tank-button"
