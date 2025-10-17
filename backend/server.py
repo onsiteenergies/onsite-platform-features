@@ -813,6 +813,128 @@ async def export_invoice_pdf(booking_id: str, current_user: dict = Depends(get_c
         headers={"Content-Disposition": f"attachment; filename=invoice_{booking_id}.pdf"}
     )
 
+
+# Admin-only Tank and Equipment Management (for all customers)
+class AdminTankCreate(BaseModel):
+    user_id: str
+    name: str
+    identifier: str
+    capacity: Optional[float] = None
+
+class AdminEquipmentCreate(BaseModel):
+    user_id: str
+    name: str
+    unit_number: str
+    license_plate: str
+    capacity: Optional[float] = None
+
+@api_router.get("/admin/fuel-tanks")
+async def admin_get_all_fuel_tanks(current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    tanks = await db.fuel_tanks.find({}, {"_id": 0}).to_list(10000)
+    return tanks
+
+@api_router.post("/admin/fuel-tanks")
+async def admin_create_fuel_tank(tank_data: AdminTankCreate, current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    tank = FuelTank(
+        id=str(uuid.uuid4()),
+        name=tank_data.name,
+        identifier=tank_data.identifier,
+        capacity=tank_data.capacity
+    )
+    doc = tank.model_dump()
+    doc['user_id'] = tank_data.user_id
+    
+    await db.fuel_tanks.insert_one(doc)
+    return tank
+
+@api_router.put("/admin/fuel-tanks/{tank_id}")
+async def admin_update_fuel_tank(tank_id: str, tank_data: FuelTankCreate, current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.fuel_tanks.update_one(
+        {"id": tank_id},
+        {"$set": tank_data.model_dump()}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Fuel tank not found")
+    
+    tank = await db.fuel_tanks.find_one({"id": tank_id}, {"_id": 0})
+    return tank
+
+@api_router.delete("/admin/fuel-tanks/{tank_id}")
+async def admin_delete_fuel_tank(tank_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.fuel_tanks.delete_one({"id": tank_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Fuel tank not found")
+    
+    return {"message": "Fuel tank deleted successfully"}
+
+@api_router.get("/admin/equipment")
+async def admin_get_all_equipment(current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    equipment = await db.customer_equipment.find({}, {"_id": 0}).to_list(10000)
+    return equipment
+
+@api_router.post("/admin/equipment")
+async def admin_create_equipment(equipment_data: AdminEquipmentCreate, current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    equipment = CustomerEquipment(
+        id=str(uuid.uuid4()),
+        name=equipment_data.name,
+        unit_number=equipment_data.unit_number,
+        license_plate=equipment_data.license_plate,
+        capacity=equipment_data.capacity
+    )
+    doc = equipment.model_dump()
+    doc['user_id'] = equipment_data.user_id
+    
+    await db.customer_equipment.insert_one(doc)
+    return equipment
+
+@api_router.put("/admin/equipment/{equipment_id}")
+async def admin_update_equipment(equipment_id: str, equipment_data: CustomerEquipmentCreate, current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.customer_equipment.update_one(
+        {"id": equipment_id},
+        {"$set": equipment_data.model_dump()}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Equipment not found")
+    
+    equipment = await db.customer_equipment.find_one({"id": equipment_id}, {"_id": 0})
+    return equipment
+
+@api_router.delete("/admin/equipment/{equipment_id}")
+async def admin_delete_equipment(equipment_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.customer_equipment.delete_one({"id": equipment_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Equipment not found")
+    
+    return {"message": "Equipment deleted successfully"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
