@@ -43,7 +43,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
   }, []);
 
   const fetchData = async () => {
-    await Promise.all([fetchBookings(), fetchPricing()]);
+    await Promise.all([fetchBookings(), fetchPricing(), fetchTanksAndEquipment()]);
   };
 
   const fetchPricing = async () => {
@@ -52,6 +52,19 @@ export default function CustomerDashboard({ user, token, onLogout }) {
       setPricing(response.data);
     } catch (error) {
       console.error('Failed to fetch pricing:', error);
+    }
+  };
+
+  const fetchTanksAndEquipment = async () => {
+    try {
+      const [tanksRes, equipmentRes] = await Promise.all([
+        axios.get(`${API}/fuel-tanks`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/equipment`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      setTanks(tanksRes.data);
+      setEquipment(equipmentRes.data);
+    } catch (error) {
+      console.error('Failed to fetch tanks/equipment:', error);
     }
   };
 
