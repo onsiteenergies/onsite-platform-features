@@ -443,7 +443,7 @@ export default function TanksAndEquipment({ token, onClose }) {
             <div>
               <Label>Location/Site</Label>
               <Select 
-                value={tankForm.location_id} 
+                value={tankForm.location_id || ""} 
                 onValueChange={(value) => handleLocationSelect(value, 'tank')}
               >
                 <SelectTrigger data-testid="tank-location">
