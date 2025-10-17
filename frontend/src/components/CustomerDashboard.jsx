@@ -613,24 +613,6 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                   </div>
                 </div>
 
-                {/* Trucks */}
-                <div className="border-t pt-4 mb-4">
-                  <h4 className="font-semibold mb-2">Assigned Trucks</h4>
-                  <div className="space-y-2">
-                    {booking.trucks.map((truck, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-                        <div>
-                          <p className="font-medium">{truck.license_plate}</p>
-                          <p className="text-sm text-gray-600">Driver: {truck.driver_name}</p>
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          Capacity: {truck.capacity_liters}L
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Delivery Logs */}
                 {logs[booking.id] && logs[booking.id].length > 0 && (
                   <div className="border-t pt-4">
