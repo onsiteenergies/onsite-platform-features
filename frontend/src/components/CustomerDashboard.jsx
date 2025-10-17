@@ -584,16 +584,43 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                 </div>
 
                 {/* Tank and Equipment Info */}
-                {(booking.tank_name || booking.equipment_name) && (
+                {((booking.selected_tanks && booking.selected_tanks.length > 0) || 
+                  (booking.selected_equipment && booking.selected_equipment.length > 0) ||
+                  booking.tank_name || booking.equipment_name) && (
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      {booking.tank_name && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      {/* Display multiple tanks if available */}
+                      {booking.selected_tanks && booking.selected_tanks.length > 0 ? (
+                        <div>
+                          <span className="text-gray-600 font-medium">Tanks:</span>
+                          <div className="mt-1 space-y-1">
+                            {booking.selected_tanks.map((tank, idx) => (
+                              <div key={idx} className="text-gray-900 bg-blue-50 px-2 py-1 rounded">
+                                {tank.name} ({tank.identifier})
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : booking.tank_name && (
                         <div>
                           <span className="text-gray-600">Tank:</span>
                           <span className="font-medium text-gray-900 ml-2">{booking.tank_name}</span>
                         </div>
                       )}
-                      {booking.equipment_name && (
+                      
+                      {/* Display multiple equipment if available */}
+                      {booking.selected_equipment && booking.selected_equipment.length > 0 ? (
+                        <div>
+                          <span className="text-gray-600 font-medium">Equipment:</span>
+                          <div className="mt-1 space-y-1">
+                            {booking.selected_equipment.map((equip, idx) => (
+                              <div key={idx} className="text-gray-900 bg-green-50 px-2 py-1 rounded">
+                                {equip.name} ({equip.unit_number})
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : booking.equipment_name && (
                         <div>
                           <span className="text-gray-600">Equipment:</span>
                           <span className="font-medium text-gray-900 ml-2">{booking.equipment_name}</span>
