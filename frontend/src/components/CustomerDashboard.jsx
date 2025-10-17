@@ -301,6 +301,9 @@ export default function CustomerDashboard({ user, token, onLogout }) {
   const handleEditOrderItem = (item) => {
     setCurrentOrderItem(item);
     setOrderQuantity(item.quantity.toString());
+    setItemDeliveryMode(item.delivery_mode || 'stored');
+    setItemDeliverySiteId(item.delivery_site_id || '');
+    setItemCustomAddress(item.delivery_address || '');
     setShowAddToOrderDialog(true);
   };
 
