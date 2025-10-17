@@ -124,33 +124,12 @@ export default function CustomerDashboard({ user, token, onLogout }) {
         preferred_date: '',
         preferred_time: '',
         special_instructions: '',
-        multiple_locations: [],
-        trucks: [{ license_plate: '', driver_name: '', capacity_liters: '' }]
+        multiple_locations: []
       });
       fetchBookings();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to create booking');
     }
-  };
-
-  const addTruck = () => {
-    setNewBooking({
-      ...newBooking,
-      trucks: [...newBooking.trucks, { license_plate: '', driver_name: '', capacity_liters: '' }]
-    });
-  };
-
-  const removeTruck = (index) => {
-    setNewBooking({
-      ...newBooking,
-      trucks: newBooking.trucks.filter((_, i) => i !== index)
-    });
-  };
-
-  const updateTruck = (index, field, value) => {
-    const updatedTrucks = [...newBooking.trucks];
-    updatedTrucks[index][field] = value;
-    setNewBooking({ ...newBooking, trucks: updatedTrucks });
   };
 
   const addLocation = () => {
