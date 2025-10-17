@@ -95,10 +95,11 @@ class FuelDeliveryAPITester:
             "POST",
             "auth/login",
             200,
-            data={"email": "customer@fuel.com", "password": "customer123"}
+            data={"email": "test@fuel.com", "password": "password123"}
         )
         if success and 'token' in response:
             self.customer_token = response['token']
+            self.customer_id = response['user']['id']
             return True
         return False
 
