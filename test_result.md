@@ -251,15 +251,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Update BookingCreate model to accept selected_tank_ids and selected_equipment_ids arrays"
-    - "Update create_booking endpoint to fetch and populate selected tanks/equipment details"
-    - "Create admin endpoints for managing all customers' fuel tanks"
-    - "Create admin endpoints for managing all customers' equipment"
     - "Update CustomerDashboard booking form with multi-select UI for tanks"
     - "Update CustomerDashboard booking form with multi-select UI for equipment"
     - "Create AdminResourcesManagement component"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
