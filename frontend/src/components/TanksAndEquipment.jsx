@@ -7,7 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Edit, Trash2, Fuel as FuelIcon, Truck } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Plus, Edit, Trash2, Fuel as FuelIcon, Truck, MapPin } from 'lucide-react';
+import DeliverySitesManagement from '@/components/DeliverySitesManagement';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -15,12 +17,67 @@ const API = `${BACKEND_URL}/api`;
 export default function TanksAndEquipment({ token, onClose }) {
   const [tanks, setTanks] = useState([]);
   const [equipment, setEquipment] = useState([]);
+  const [deliverySites, setDeliverySites] = useState([]);
   const [showTankDialog, setShowTankDialog] = useState(false);
   const [showEquipmentDialog, setShowEquipmentDialog] = useState(false);
   const [editingTank, setEditingTank] = useState(null);
   const [editingEquipment, setEditingEquipment] = useState(null);
-  const [tankForm, setTankForm] = useState({ name: '', identifier: '', capacity: '' });
-  const [equipmentForm, setEquipmentForm] = useState({ name: '', unit_number: '', license_plate: '', capacity: '' });
+  const [tankForm, setTankForm] = useState({ 
+    name: '', 
+    identifier: '', 
+    capacity: '',
+    location_id: '',
+    location_name: '',
+    location_address: ''
+  });
+  const [equipmentForm, setEquipmentForm] = useState({ 
+    name: '', 
+    unit_number: '', 
+    license_plate: '', 
+    capacity: '',
+    location_id: '',
+    location_name: '',
+    location_address: ''
+  });
+
+  useEffect(() => {
+    fetchData();
+    fetchDeliverySites();
+  }, []);
+
+  const fetchDeliverySites = async () => {
+    try {
+      const response = await axios.get(`${API}/delivery-sites`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setDeliverySites(response.data || []);
+    } catch (error) {
+      console.error('Failed to fetch delivery sites:', error);
+    }
+  };
+
+  const handleSitesUpdate = (sites) => {
+    setDeliverySites(sites);
+  };
+
+  const handleLocationSelect = (locationId, formType) => {
+    const site = deliverySites.find(s => s.id === locationId);
+    if (formType === 'tank') {
+      setTankForm({
+        ...tankForm,
+        location_id: site?.id || '',
+        location_name: site?.name || '',
+        location_address: site?.address || ''
+      });
+    } else {
+      setEquipmentForm({
+        ...equipmentForm,
+        location_id: site?.id || '',
+        location_name: site?.name || '',
+        location_address: site?.address || ''
+      });
+    }
+  };
 
   useEffect(() => {
     fetchData();
