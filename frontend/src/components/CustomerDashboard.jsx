@@ -8,8 +8,10 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Truck, Calendar, Fuel, MapPin, Clock, Package, LogOut, FileText, Settings } from 'lucide-react';
+import { Plus, Truck, Calendar, Fuel, MapPin, Clock, Package, LogOut, FileText, Settings, Check } from 'lucide-react';
 import TanksAndEquipment from '@/components/TanksAndEquipment';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -31,10 +33,8 @@ export default function CustomerDashboard({ user, token, onLogout }) {
     preferred_time: '',
     special_instructions: '',
     multiple_locations: [],
-    tank_id: null,
-    tank_name: '',
-    equipment_id: null,
-    equipment_name: ''
+    selected_tank_ids: [],
+    selected_equipment_ids: []
   });
   const [locationInput, setLocationInput] = useState('');
 
