@@ -127,7 +127,9 @@ export default function CustomerDashboard({ user, token, onLogout }) {
       const bookingData = {
         ...newBooking,
         fuel_quantity_liters: parseFloat(newBooking.fuel_quantity_liters),
-        multiple_locations: newBooking.multiple_locations.length > 0 ? newBooking.multiple_locations : null
+        multiple_locations: newBooking.multiple_locations.length > 0 ? newBooking.multiple_locations : null,
+        selected_tank_ids: newBooking.selected_tank_ids.length > 0 ? newBooking.selected_tank_ids : null,
+        selected_equipment_ids: newBooking.selected_equipment_ids.length > 0 ? newBooking.selected_equipment_ids : null
       };
 
       await axios.post(`${API}/bookings`, bookingData, {
@@ -144,10 +146,8 @@ export default function CustomerDashboard({ user, token, onLogout }) {
         preferred_time: '',
         special_instructions: '',
         multiple_locations: [],
-        tank_id: null,
-        tank_name: '',
-        equipment_id: null,
-        equipment_name: ''
+        selected_tank_ids: [],
+        selected_equipment_ids: []
       });
       fetchBookings();
     } catch (error) {
@@ -155,21 +155,27 @@ export default function CustomerDashboard({ user, token, onLogout }) {
     }
   };
 
-  const handleTankSelect = (tankId) => {
-    const selectedTank = tanks.find(t => t.id === tankId);
-    setNewBooking({
-      ...newBooking,
-      tank_id: tankId,
-      tank_name: selectedTank ? selectedTank.name : ''
+  const handleTankToggle = (tankId) => {
+    setNewBooking(prev => {
+      const isSelected = prev.selected_tank_ids.includes(tankId);
+      return {
+        ...prev,
+        selected_tank_ids: isSelected
+          ? prev.selected_tank_ids.filter(id => id !== tankId)
+          : [...prev.selected_tank_ids, tankId]
+      };
     });
   };
 
-  const handleEquipmentSelect = (equipmentId) => {
-    const selectedEquipment = equipment.find(e => e.id === equipmentId);
-    setNewBooking({
-      ...newBooking,
-      equipment_id: equipmentId,
-      equipment_name: selectedEquipment ? selectedEquipment.name : ''
+  const handleEquipmentToggle = (equipmentId) => {
+    setNewBooking(prev => {
+      const isSelected = prev.selected_equipment_ids.includes(equipmentId);
+      return {
+        ...prev,
+        selected_equipment_ids: isSelected
+          ? prev.selected_equipment_ids.filter(id => id !== equipmentId)
+          : [...prev.selected_equipment_ids, equipmentId]
+      };
     });
   };
 
