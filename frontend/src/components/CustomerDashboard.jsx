@@ -403,7 +403,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                   <div className="flex items-center text-sm text-gray-600">
                     <Calendar className="w-4 h-4 mr-2 text-blue-600" />
                     {booking.preferred_date}
@@ -411,10 +411,6 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                   <div className="flex items-center text-sm text-gray-600">
                     <Clock className="w-4 h-4 mr-2 text-blue-600" />
                     {booking.preferred_time}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Truck className="w-4 h-4 mr-2 text-green-600" />
-                    {booking.trucks.length} Truck(s)
                   </div>
                   <div className="flex items-center text-sm text-gray-600">
                     <FileText className="w-4 h-4 mr-2 text-blue-600" />
