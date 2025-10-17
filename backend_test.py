@@ -2,6 +2,7 @@ import requests
 import sys
 import json
 from datetime import datetime
+import uuid
 
 class FuelDeliveryAPITester:
     def __init__(self, base_url="https://tanker-track-1.preview.emergentagent.com"):
@@ -9,9 +10,12 @@ class FuelDeliveryAPITester:
         self.api_url = f"{base_url}/api"
         self.admin_token = None
         self.customer_token = None
+        self.customer_id = None
         self.tests_run = 0
         self.tests_passed = 0
         self.test_results = []
+        self.created_tank_ids = []
+        self.created_equipment_ids = []
 
     def log_test(self, name, success, details=""):
         """Log test result"""
