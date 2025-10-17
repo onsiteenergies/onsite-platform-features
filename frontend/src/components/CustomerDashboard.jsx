@@ -185,7 +185,9 @@ export default function CustomerDashboard({ user, token, onLogout }) {
       name: currentOrderItem.name,
       identifier: currentOrderItem.identifier || currentOrderItem.unit_number,
       quantity: parseFloat(orderQuantity),
-      capacity: currentOrderItem.capacity
+      capacity: currentOrderItem.capacity,
+      location_name: currentOrderItem.location_name || null,
+      location_address: currentOrderItem.location_address || null
     };
 
     // Check if item already in order
