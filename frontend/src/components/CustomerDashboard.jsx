@@ -397,19 +397,6 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                   </div>
 
                   <div>
-                    <Label>Quantity (Liters) *</Label>
-                    <Input
-                      data-testid="booking-quantity"
-                      type="number"
-                      step="0.01"
-                      value={newBooking.fuel_quantity_liters}
-                      onChange={(e) => setNewBooking({ ...newBooking, fuel_quantity_liters: e.target.value })}
-                      placeholder="1000"
-                      required
-                    />
-                  </div>
-
-                  <div>
                     <Label>Preferred Date *</Label>
                     <Input
                       data-testid="booking-date"
@@ -420,7 +407,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                     />
                   </div>
 
-                  <div>
+                  <div className="col-span-2">
                     <Label>Preferred Time *</Label>
                     <Input
                       data-testid="booking-time"
@@ -431,123 +418,164 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                     />
                   </div>
 
-                  <div>
-                    <Label>Select Tanks (Optional)</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
+                  {/* Tanks Section */}
+                  <div className="col-span-2">
+                    <div className="flex justify-between items-center mb-2">
+                      <Label className="text-base font-semibold">Select Tanks to Refuel</Label>
+                      {tanks.length === 0 && (
                         <Button
-                          variant="outline"
-                          role="combobox"
-                          data-testid="booking-tanks"
-                          className="w-full justify-between text-left font-normal"
+                          type="button"
+                          variant="link"
+                          size="sm"
+                          onClick={() => {
+                            setShowNewBooking(false);
+                            setShowTanksEquipment(true);
+                          }}
+                          className="text-blue-600"
                         >
-                          {newBooking.selected_tank_ids.length > 0
-                            ? `${newBooking.selected_tank_ids.length} tank(s) selected`
-                            : "Select tanks"}
+                          + Add Tanks First
                         </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full p-0">
-                        <Command>
-                          <CommandInput placeholder="Search tanks..." />
-                          <CommandEmpty>No tanks found.</CommandEmpty>
-                          <CommandGroup className="max-h-64 overflow-auto">
-                            {tanks.map((tank) => (
-                              <CommandItem
-                                key={tank.id}
-                                onSelect={() => handleTankToggle(tank.id)}
-                                className="cursor-pointer"
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <span>{tank.name} ({tank.identifier})</span>
-                                  {newBooking.selected_tank_ids.includes(tank.id) && (
-                                    <Check className="w-4 h-4 text-green-600" />
+                      )}
+                    </div>
+                    <div className="border rounded-lg p-3 bg-gray-50 max-h-60 overflow-y-auto">
+                      {tanks.length === 0 ? (
+                        <p className="text-sm text-gray-500 text-center py-4">No tanks available. Add tanks first.</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {tanks.map((tank) => {
+                            const inOrder = orderItems.find(item => item.id === tank.id && item.type === 'tank');
+                            return (
+                              <div key={tank.id} className="flex justify-between items-center bg-white p-3 rounded border">
+                                <div className="flex-1">
+                                  <p className="font-medium text-gray-900">{tank.name}</p>
+                                  <p className="text-sm text-gray-600">ID: {tank.identifier}</p>
+                                  {tank.capacity && (
+                                    <p className="text-sm text-blue-600">Capacity: {tank.capacity}L</p>
+                                  )}
+                                  {inOrder && (
+                                    <p className="text-sm text-green-600 font-medium mt-1">
+                                      ✓ In Order: {inOrder.quantity}L
+                                    </p>
                                   )}
                                 </div>
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    {newBooking.selected_tank_ids.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {newBooking.selected_tank_ids.map((tankId) => {
-                          const tank = tanks.find(t => t.id === tankId);
-                          return tank ? (
-                            <span key={tankId} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                              {tank.name}
-                              <button
-                                type="button"
-                                onClick={() => handleTankToggle(tankId)}
-                                className="hover:text-blue-900"
-                              >
-                                ×
-                              </button>
-                            </span>
-                          ) : null;
-                        })}
-                      </div>
-                    )}
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  onClick={() => handleAddToOrder(tank, 'tank')}
+                                  className={inOrder ? "bg-green-600" : "bg-blue-600"}
+                                  data-testid={`add-tank-${tank.id}`}
+                                >
+                                  {inOrder ? 'Update' : '+ Add to Order'}
+                                </Button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <div>
-                    <Label>Select Equipment/Trucks (Optional)</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
+                  {/* Equipment Section */}
+                  <div className="col-span-2">
+                    <div className="flex justify-between items-center mb-2">
+                      <Label className="text-base font-semibold">Select Equipment/Trucks to Refuel</Label>
+                      {equipment.length === 0 && (
                         <Button
-                          variant="outline"
-                          role="combobox"
-                          data-testid="booking-equipment"
-                          className="w-full justify-between text-left font-normal"
+                          type="button"
+                          variant="link"
+                          size="sm"
+                          onClick={() => {
+                            setShowNewBooking(false);
+                            setShowTanksEquipment(true);
+                          }}
+                          className="text-blue-600"
                         >
-                          {newBooking.selected_equipment_ids.length > 0
-                            ? `${newBooking.selected_equipment_ids.length} equipment selected`
-                            : "Select equipment"}
+                          + Add Equipment First
                         </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full p-0">
-                        <Command>
-                          <CommandInput placeholder="Search equipment..." />
-                          <CommandEmpty>No equipment found.</CommandEmpty>
-                          <CommandGroup className="max-h-64 overflow-auto">
-                            {equipment.map((equip) => (
-                              <CommandItem
-                                key={equip.id}
-                                onSelect={() => handleEquipmentToggle(equip.id)}
-                                className="cursor-pointer"
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <span>{equip.name} ({equip.unit_number})</span>
-                                  {newBooking.selected_equipment_ids.includes(equip.id) && (
-                                    <Check className="w-4 h-4 text-green-600" />
+                      )}
+                    </div>
+                    <div className="border rounded-lg p-3 bg-gray-50 max-h-60 overflow-y-auto">
+                      {equipment.length === 0 ? (
+                        <p className="text-sm text-gray-500 text-center py-4">No equipment available. Add equipment first.</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {equipment.map((equip) => {
+                            const inOrder = orderItems.find(item => item.id === equip.id && item.type === 'equipment');
+                            return (
+                              <div key={equip.id} className="flex justify-between items-center bg-white p-3 rounded border">
+                                <div className="flex-1">
+                                  <p className="font-medium text-gray-900">{equip.name}</p>
+                                  <p className="text-sm text-gray-600">Unit: {equip.unit_number} | License: {equip.license_plate}</p>
+                                  {equip.capacity && (
+                                    <p className="text-sm text-blue-600">Capacity: {equip.capacity}L</p>
+                                  )}
+                                  {inOrder && (
+                                    <p className="text-sm text-green-600 font-medium mt-1">
+                                      ✓ In Order: {inOrder.quantity}L
+                                    </p>
                                   )}
                                 </div>
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    {newBooking.selected_equipment_ids.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {newBooking.selected_equipment_ids.map((equipId) => {
-                          const equip = equipment.find(e => e.id === equipId);
-                          return equip ? (
-                            <span key={equipId} className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
-                              {equip.name}
-                              <button
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  onClick={() => handleAddToOrder(equip, 'equipment')}
+                                  className={inOrder ? "bg-green-600" : "bg-blue-600"}
+                                  data-testid={`add-equipment-${equip.id}`}
+                                >
+                                  {inOrder ? 'Update' : '+ Add to Order'}
+                                </Button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Order Summary */}
+                  {orderItems.length > 0 && (
+                    <div className="col-span-2 bg-green-50 border-2 border-green-300 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="font-bold text-green-900">Order Summary</h4>
+                        <p className="text-lg font-bold text-green-700">
+                          Total: {orderItems.reduce((sum, item) => sum + item.quantity, 0).toFixed(2)}L
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        {orderItems.map((item, idx) => (
+                          <div key={`${item.type}-${item.id}-${idx}`} className="flex justify-between items-center bg-white p-2 rounded">
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">
+                                {item.type === 'tank' ? '🛢️' : '🚚'} {item.name}
+                              </p>
+                              <p className="text-xs text-gray-600">{item.identifier}</p>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="font-bold text-green-700">{item.quantity}L</span>
+                              <Button
                                 type="button"
-                                onClick={() => handleEquipmentToggle(equipId)}
-                                className="hover:text-green-900"
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleEditOrderItem(item)}
+                                className="h-7 px-2"
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleRemoveFromOrder(item.id, item.type)}
+                                className="h-7 px-2 text-red-600 hover:text-red-700"
                               >
                                 ×
-                              </button>
-                            </span>
-                          ) : null;
-                        })}
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
                   <div className="col-span-2">
                     <Label>Special Instructions</Label>
@@ -594,18 +622,95 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                 </div>
 
                 <div className="flex justify-end space-x-2 pt-4">
-                  <Button type="button" variant="outline" onClick={() => setShowNewBooking(false)}>
+                  <Button type="button" variant="outline" onClick={() => {
+                    setShowNewBooking(false);
+                    setOrderItems([]);
+                  }}>
                     Cancel
                   </Button>
                   <Button
                     type="submit"
                     data-testid="create-booking-submit"
                     className="bg-gradient-to-r from-blue-600 to-green-600"
+                    disabled={orderItems.length === 0}
                   >
-                    Create Booking
+                    Create Booking ({orderItems.length} item{orderItems.length !== 1 ? 's' : ''})
                   </Button>
                 </div>
               </form>
+
+              {/* Add to Order Dialog */}
+              <Dialog open={showAddToOrderDialog} onOpenChange={setShowAddToOrderDialog}>
+                <DialogContent aria-describedby="add-to-order-description">
+                  <DialogHeader>
+                    <DialogTitle>Add to Order</DialogTitle>
+                  </DialogHeader>
+                  <p id="add-to-order-description" className="sr-only">Specify the quantity of fuel for this tank or equipment</p>
+                  {currentOrderItem && (
+                    <div className="space-y-4">
+                      <div className="bg-blue-50 p-3 rounded">
+                        <p className="font-bold text-lg">{currentOrderItem.name}</p>
+                        <p className="text-sm text-gray-600">
+                          {currentOrderItem.identifier || currentOrderItem.unit_number}
+                        </p>
+                        {currentOrderItem.capacity && (
+                          <p className="text-sm text-blue-700 font-medium mt-1">
+                            Max Capacity: {currentOrderItem.capacity}L
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <Label>Fuel Quantity (Liters) *</Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={orderQuantity}
+                          onChange={(e) => setOrderQuantity(e.target.value)}
+                          placeholder="Enter liters"
+                          data-testid="order-quantity-input"
+                          autoFocus
+                        />
+                      </div>
+
+                      {currentOrderItem.capacity && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleFillToCapacity}
+                          className="w-full border-green-500 text-green-700 hover:bg-green-50"
+                          data-testid="fill-to-capacity-button"
+                        >
+                          <Fuel className="w-4 h-4 mr-2" />
+                          Fill to Full Capacity ({currentOrderItem.capacity}L)
+                        </Button>
+                      )}
+
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setShowAddToOrderDialog(false);
+                            setCurrentOrderItem(null);
+                            setOrderQuantity('');
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={handleConfirmAddToOrder}
+                          className="bg-gradient-to-r from-blue-600 to-green-600"
+                          data-testid="confirm-add-to-order"
+                        >
+                          {orderItems.find(item => item.id === currentOrderItem.id && item.type === currentOrderItem.type) ? 'Update Order' : 'Add to Order'}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </DialogContent>
+              </Dialog>
             </DialogContent>
           </Dialog>
         </div>
