@@ -98,13 +98,20 @@ export default function TanksAndEquipment({ token, onClose }) {
   const handleSaveEquipment = async (e) => {
     e.preventDefault();
     try {
+      const data = {
+        name: equipmentForm.name,
+        unit_number: equipmentForm.unit_number,
+        license_plate: equipmentForm.license_plate,
+        capacity: equipmentForm.capacity ? parseFloat(equipmentForm.capacity) : null
+      };
+
       if (editingEquipment) {
-        await axios.put(`${API}/equipment/${editingEquipment.id}`, equipmentForm, {
+        await axios.put(`${API}/equipment/${editingEquipment.id}`, data, {
           headers: { Authorization: `Bearer ${token}` }
         });
         toast.success('Equipment updated successfully');
       } else {
-        await axios.post(`${API}/equipment`, equipmentForm, {
+        await axios.post(`${API}/equipment`, data, {
           headers: { Authorization: `Bearer ${token}` }
         });
         toast.success('Equipment added successfully');
@@ -112,7 +119,7 @@ export default function TanksAndEquipment({ token, onClose }) {
 
       setShowEquipmentDialog(false);
       setEditingEquipment(null);
-      setEquipmentForm({ name: '', unit_number: '', license_plate: '' });
+      setEquipmentForm({ name: '', unit_number: '', license_plate: '', capacity: '' });
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to save equipment');
