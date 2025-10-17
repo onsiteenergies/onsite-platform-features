@@ -360,41 +360,121 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                   </div>
 
                   <div>
-                    <Label>Select Tank (Optional)</Label>
-                    <Select
-                      value={newBooking.tank_id || undefined}
-                      onValueChange={handleTankSelect}
-                    >
-                      <SelectTrigger data-testid="booking-tank">
-                        <SelectValue placeholder="Select a tank" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {tanks.map((tank) => (
-                          <SelectItem key={tank.id} value={tank.id}>
-                            {tank.name} ({tank.identifier})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label>Select Tanks (Optional)</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          data-testid="booking-tanks"
+                          className="w-full justify-between text-left font-normal"
+                        >
+                          {newBooking.selected_tank_ids.length > 0
+                            ? `${newBooking.selected_tank_ids.length} tank(s) selected`
+                            : "Select tanks"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput placeholder="Search tanks..." />
+                          <CommandEmpty>No tanks found.</CommandEmpty>
+                          <CommandGroup className="max-h-64 overflow-auto">
+                            {tanks.map((tank) => (
+                              <CommandItem
+                                key={tank.id}
+                                onSelect={() => handleTankToggle(tank.id)}
+                                className="cursor-pointer"
+                              >
+                                <div className="flex items-center justify-between w-full">
+                                  <span>{tank.name} ({tank.identifier})</span>
+                                  {newBooking.selected_tank_ids.includes(tank.id) && (
+                                    <Check className="w-4 h-4 text-green-600" />
+                                  )}
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    {newBooking.selected_tank_ids.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {newBooking.selected_tank_ids.map((tankId) => {
+                          const tank = tanks.find(t => t.id === tankId);
+                          return tank ? (
+                            <span key={tankId} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                              {tank.name}
+                              <button
+                                type="button"
+                                onClick={() => handleTankToggle(tankId)}
+                                className="hover:text-blue-900"
+                              >
+                                ×
+                              </button>
+                            </span>
+                          ) : null;
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   <div>
-                    <Label>Select Equipment/Truck (Optional)</Label>
-                    <Select
-                      value={newBooking.equipment_id || undefined}
-                      onValueChange={handleEquipmentSelect}
-                    >
-                      <SelectTrigger data-testid="booking-equipment">
-                        <SelectValue placeholder="Select equipment" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {equipment.map((equip) => (
-                          <SelectItem key={equip.id} value={equip.id}>
-                            {equip.name} ({equip.unit_number})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label>Select Equipment/Trucks (Optional)</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          data-testid="booking-equipment"
+                          className="w-full justify-between text-left font-normal"
+                        >
+                          {newBooking.selected_equipment_ids.length > 0
+                            ? `${newBooking.selected_equipment_ids.length} equipment selected`
+                            : "Select equipment"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput placeholder="Search equipment..." />
+                          <CommandEmpty>No equipment found.</CommandEmpty>
+                          <CommandGroup className="max-h-64 overflow-auto">
+                            {equipment.map((equip) => (
+                              <CommandItem
+                                key={equip.id}
+                                onSelect={() => handleEquipmentToggle(equip.id)}
+                                className="cursor-pointer"
+                              >
+                                <div className="flex items-center justify-between w-full">
+                                  <span>{equip.name} ({equip.unit_number})</span>
+                                  {newBooking.selected_equipment_ids.includes(equip.id) && (
+                                    <Check className="w-4 h-4 text-green-600" />
+                                  )}
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    {newBooking.selected_equipment_ids.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {newBooking.selected_equipment_ids.map((equipId) => {
+                          const equip = equipment.find(e => e.id === equipId);
+                          return equip ? (
+                            <span key={equipId} className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                              {equip.name}
+                              <button
+                                type="button"
+                                onClick={() => handleEquipmentToggle(equipId)}
+                                className="hover:text-green-900"
+                              >
+                                ×
+                              </button>
+                            </span>
+                          ) : null;
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   <div className="col-span-2">
