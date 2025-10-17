@@ -139,6 +139,31 @@ export default function CustomerDashboard({ user, token, onLogout }) {
     }
   };
 
+
+  const handleSiteSelect = (siteId) => {
+    setSelectedSiteId(siteId);
+    if (siteId) {
+      const site = deliverySites.find(s => s.id === siteId);
+      if (site) {
+        setNewBooking({ ...newBooking, delivery_address: site.address });
+      }
+    } else {
+      setNewBooking({ ...newBooking, delivery_address: '' });
+    }
+  };
+
+  const handleAddressTypeChange = (useCustom) => {
+    setUseCustomAddress(useCustom);
+    if (!useCustom) {
+      // Switching to saved sites - clear custom address
+      setNewBooking({ ...newBooking, delivery_address: '' });
+      setSelectedSiteId('');
+    } else {
+      // Switching to custom - clear selected site
+      setSelectedSiteId('');
+    }
+  };
+
   const handleCreateBooking = async (e) => {
     e.preventDefault();
     try {
