@@ -351,6 +351,15 @@ export default function TanksAndEquipment({ token, onClose }) {
                         {equip.capacity && (
                           <p className="text-sm text-gray-600">Capacity: {equip.capacity}L</p>
                         )}
+                        {equip.location_name && (
+                          <div className="flex items-center mt-2 text-sm text-blue-600">
+                            <MapPin className="w-3 h-3 mr-1" />
+                            <span>{equip.location_name}</span>
+                          </div>
+                        )}
+                        {equip.location_address && (
+                          <p className="text-xs text-gray-500 ml-4">{equip.location_address}</p>
+                        )}
                       </div>
                       <div className="flex space-x-2">
                         <Button
