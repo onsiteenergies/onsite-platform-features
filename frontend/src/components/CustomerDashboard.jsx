@@ -868,6 +868,88 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                         </Button>
                       )}
 
+                      {/* Delivery Location Selection */}
+                      <div className="border-t pt-4 space-y-3">
+                        <Label className="text-base font-semibold">Delivery Location for This Item</Label>
+                        
+                        {/* Stored Location Display */}
+                        {currentOrderItem.location_name && (
+                          <div className="bg-gray-50 p-2 rounded text-xs">
+                            <p className="text-gray-700">
+                              <strong>Stored at:</strong> {currentOrderItem.location_name}
+                            </p>
+                            <p className="text-gray-600">{currentOrderItem.location_address}</p>
+                          </div>
+                        )}
+
+                        {/* Delivery Mode Selector */}
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant={itemDeliveryMode === 'stored' ? "default" : "outline"}
+                            onClick={() => setItemDeliveryMode('stored')}
+                            className="text-xs"
+                          >
+                            Use Stored Location
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant={itemDeliveryMode === 'saved_site' ? "default" : "outline"}
+                            onClick={() => setItemDeliveryMode('saved_site')}
+                            className="text-xs"
+                          >
+                            Different Site
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant={itemDeliveryMode === 'custom' ? "default" : "outline"}
+                            onClick={() => setItemDeliveryMode('custom')}
+                            className="text-xs"
+                          >
+                            Custom Address
+                          </Button>
+                        </div>
+
+                        {/* Saved Site Selector */}
+                        {itemDeliveryMode === 'saved_site' && (
+                          <div>
+                            <Select
+                              value={itemDeliverySiteId}
+                              onValueChange={setItemDeliverySiteId}
+                            >
+                              <SelectTrigger className="text-sm">
+                                <SelectValue placeholder="Select delivery site" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {deliverySites.map((site) => (
+                                  <SelectItem key={site.id} value={site.id}>
+                                    {site.name} - {site.address}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
+
+                        {/* Custom Address Input */}
+                        {itemDeliveryMode === 'custom' && (
+                          <div>
+                            <Input
+                              value={itemCustomAddress}
+                              onChange={(e) => setItemCustomAddress(e.target.value)}
+                              placeholder="Enter delivery address for this item"
+                              className="text-sm"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">
+                              One-time delivery location for this {currentOrderItem.type}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
                       <div className="flex justify-end space-x-2">
                         <Button
                           type="button"
