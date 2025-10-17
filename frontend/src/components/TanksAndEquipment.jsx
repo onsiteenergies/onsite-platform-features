@@ -386,6 +386,12 @@ export default function TanksAndEquipment({ token, onClose }) {
             )}
           </div>
         </TabsContent>
+
+        {/* Delivery Sites Tab */}
+        <TabsContent value="sites">
+          <DeliverySitesManagement token={token} onSitesUpdate={handleSitesUpdate} />
+        </TabsContent>
+
       </Tabs>
 
       {/* Tank Dialog */}
