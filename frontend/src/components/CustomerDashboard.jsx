@@ -216,6 +216,9 @@ export default function CustomerDashboard({ user, token, onLogout }) {
   const handleAddToOrder = (item, type) => {
     setCurrentOrderItem({ ...item, type });
     setOrderQuantity('');
+    setItemDeliveryMode('stored'); // Default to stored location
+    setItemDeliverySiteId('');
+    setItemCustomAddress('');
     setShowAddToOrderDialog(true);
   };
 
@@ -225,6 +228,28 @@ export default function CustomerDashboard({ user, token, onLogout }) {
       return;
     }
 
+    // Determine delivery location based on mode
+    let deliveryLocation = null;
+    let deliveryAddress = null;
+    let deliverySiteName = null;
+
+    if (itemDeliveryMode === 'stored') {
+      // Use the item's stored location
+      deliveryLocation = currentOrderItem.location_name || null;
+      deliveryAddress = currentOrderItem.location_address || null;
+    } else if (itemDeliveryMode === 'saved_site') {
+      // Use selected saved site
+      const site = deliverySites.find(s => s.id === itemDeliverySiteId);
+      if (site) {
+        deliverySiteName = site.name;
+        deliveryAddress = site.address;
+      }
+    } else if (itemDeliveryMode === 'custom') {
+      // Use custom address
+      deliveryAddress = itemCustomAddress;
+      deliverySiteName = 'Custom Location';
+    }
+
     const newItem = {
       id: currentOrderItem.id,
       type: currentOrderItem.type,
@@ -232,8 +257,11 @@ export default function CustomerDashboard({ user, token, onLogout }) {
       identifier: currentOrderItem.identifier || currentOrderItem.unit_number,
       quantity: parseFloat(orderQuantity),
       capacity: currentOrderItem.capacity,
-      location_name: currentOrderItem.location_name || null,
-      location_address: currentOrderItem.location_address || null
+      stored_location_name: currentOrderItem.location_name || null,
+      stored_location_address: currentOrderItem.location_address || null,
+      delivery_location_name: deliverySiteName || deliveryLocation,
+      delivery_address: deliveryAddress,
+      delivery_mode: itemDeliveryMode
     };
 
     // Check if item already in order
@@ -251,6 +279,9 @@ export default function CustomerDashboard({ user, token, onLogout }) {
     setShowAddToOrderDialog(false);
     setCurrentOrderItem(null);
     setOrderQuantity('');
+    setItemDeliveryMode('stored');
+    setItemDeliverySiteId('');
+    setItemCustomAddress('');
     toast.success('Added to order');
   };
 
