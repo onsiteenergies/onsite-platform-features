@@ -123,7 +123,14 @@ export default function TanksAndEquipment({ token, onClose }) {
 
       setShowTankDialog(false);
       setEditingTank(null);
-      setTankForm({ name: '', identifier: '', capacity: '' });
+      setTankForm({ 
+        name: '', 
+        identifier: '', 
+        capacity: '',
+        location_id: '',
+        location_name: '',
+        location_address: ''
+      });
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to save tank');
