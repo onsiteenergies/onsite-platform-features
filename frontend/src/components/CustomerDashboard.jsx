@@ -499,6 +499,26 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                   </div>
                 </div>
 
+                {/* Tank and Equipment Info */}
+                {(booking.tank_name || booking.equipment_name) && (
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      {booking.tank_name && (
+                        <div>
+                          <span className="text-gray-600">Tank:</span>
+                          <span className="font-medium text-gray-900 ml-2">{booking.tank_name}</span>
+                        </div>
+                      )}
+                      {booking.equipment_name && (
+                        <div>
+                          <span className="text-gray-600">Equipment:</span>
+                          <span className="font-medium text-gray-900 ml-2">{booking.equipment_name}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Invoice Details for Delivered Orders */}
                 {booking.status === 'delivered' && (booking.ordered_amount || booking.dispensed_amount) && (
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
