@@ -130,12 +130,19 @@ export default function CustomerDashboard({ user, token, onLogout }) {
   const handleCreateBooking = async (e) => {
     e.preventDefault();
     try {
+      // Calculate total quantity from order items
+      const totalQuantity = orderItems.reduce((sum, item) => sum + parseFloat(item.quantity), 0);
+      
+      // Extract tank and equipment IDs from order items
+      const tankIds = orderItems.filter(item => item.type === 'tank').map(item => item.id);
+      const equipmentIds = orderItems.filter(item => item.type === 'equipment').map(item => item.id);
+      
       const bookingData = {
         ...newBooking,
-        fuel_quantity_liters: parseFloat(newBooking.fuel_quantity_liters),
+        fuel_quantity_liters: totalQuantity || parseFloat(newBooking.fuel_quantity_liters),
         multiple_locations: newBooking.multiple_locations.length > 0 ? newBooking.multiple_locations : null,
-        selected_tank_ids: newBooking.selected_tank_ids.length > 0 ? newBooking.selected_tank_ids : null,
-        selected_equipment_ids: newBooking.selected_equipment_ids.length > 0 ? newBooking.selected_equipment_ids : null
+        selected_tank_ids: tankIds.length > 0 ? tankIds : null,
+        selected_equipment_ids: equipmentIds.length > 0 ? equipmentIds : null
       };
 
       await axios.post(`${API}/bookings`, bookingData, {
@@ -155,10 +162,69 @@ export default function CustomerDashboard({ user, token, onLogout }) {
         selected_tank_ids: [],
         selected_equipment_ids: []
       });
+      setOrderItems([]);
       fetchBookings();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to create booking');
     }
+  };
+
+  const handleAddToOrder = (item, type) => {
+    setCurrentOrderItem({ ...item, type });
+    setOrderQuantity('');
+    setShowAddToOrderDialog(true);
+  };
+
+  const handleConfirmAddToOrder = () => {
+    if (!orderQuantity || parseFloat(orderQuantity) <= 0) {
+      toast.error('Please enter a valid quantity');
+      return;
+    }
+
+    const newItem = {
+      id: currentOrderItem.id,
+      type: currentOrderItem.type,
+      name: currentOrderItem.name,
+      identifier: currentOrderItem.identifier || currentOrderItem.unit_number,
+      quantity: parseFloat(orderQuantity),
+      capacity: currentOrderItem.capacity
+    };
+
+    // Check if item already in order
+    const existingIndex = orderItems.findIndex(item => item.id === newItem.id && item.type === newItem.type);
+    if (existingIndex >= 0) {
+      // Update existing item
+      const updated = [...orderItems];
+      updated[existingIndex] = newItem;
+      setOrderItems(updated);
+    } else {
+      // Add new item
+      setOrderItems([...orderItems, newItem]);
+    }
+
+    setShowAddToOrderDialog(false);
+    setCurrentOrderItem(null);
+    setOrderQuantity('');
+    toast.success('Added to order');
+  };
+
+  const handleFillToCapacity = () => {
+    if (currentOrderItem && currentOrderItem.capacity) {
+      setOrderQuantity(currentOrderItem.capacity.toString());
+    } else {
+      toast.error('No capacity information available');
+    }
+  };
+
+  const handleRemoveFromOrder = (itemId, itemType) => {
+    setOrderItems(orderItems.filter(item => !(item.id === itemId && item.type === itemType)));
+    toast.success('Removed from order');
+  };
+
+  const handleEditOrderItem = (item) => {
+    setCurrentOrderItem(item);
+    setOrderQuantity(item.quantity.toString());
+    setShowAddToOrderDialog(true);
   };
 
   const handleTankToggle = (tankId) => {
