@@ -112,51 +112,63 @@ user_problem_statement: |
 backend:
   - task: "Update BookingCreate model to accept selected_tank_ids and selected_equipment_ids arrays"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added selected_tank_ids and selected_equipment_ids fields to BookingCreate model. Kept old fields for backward compatibility."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: BookingCreate model successfully accepts selected_tank_ids and selected_equipment_ids arrays. Created multiple bookings with different combinations: tanks only, equipment only, and both tanks & equipment. All bookings created successfully with proper array handling."
 
   - task: "Update create_booking endpoint to fetch and populate selected tanks/equipment details"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Modified create_booking endpoint to query fuel_tanks and customer_equipment collections based on selected IDs and populate selected_tanks and selected_equipment arrays in the booking."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: create_booking endpoint correctly fetches and populates selected tanks/equipment details. Verified that booking responses contain populated selected_tanks and selected_equipment arrays with full resource details (id, name, identifier, capacity, etc.). Multi-select verification confirmed correct array population."
 
   - task: "Create admin endpoints for managing all customers' fuel tanks"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added admin-only endpoints: GET/POST/PUT/DELETE /api/admin/fuel-tanks with proper authorization checks. Admins can create tanks for any customer by specifying user_id."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All admin tank management endpoints working correctly. GET /api/admin/fuel-tanks returns all tanks across customers. POST creates tanks for specified user_id. PUT updates tank details. DELETE removes tanks. Authorization properly enforced - customers get 403 when accessing admin endpoints."
 
   - task: "Create admin endpoints for managing all customers' equipment"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added admin-only endpoints: GET/POST/PUT/DELETE /api/admin/equipment with proper authorization checks. Admins can create equipment for any customer by specifying user_id."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All admin equipment management endpoints working correctly. GET /api/admin/equipment returns all equipment across customers. POST creates equipment for specified user_id. PUT updates equipment details. DELETE removes equipment. Authorization properly enforced - customers get 403 when accessing admin endpoints."
 
 frontend:
   - task: "Update CustomerDashboard booking form with multi-select UI for tanks"
