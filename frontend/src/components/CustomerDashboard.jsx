@@ -409,14 +409,87 @@ export default function CustomerDashboard({ user, token, onLogout }) {
               <form onSubmit={handleCreateBooking} className="space-y-4 mt-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
-                    <Label>Delivery Address *</Label>
-                    <Input
-                      data-testid="booking-address"
-                      value={newBooking.delivery_address}
-                      onChange={(e) => setNewBooking({ ...newBooking, delivery_address: e.target.value })}
-                      placeholder="123 Main St, Montreal, QC"
-                      required
-                    />
+                    <div className="flex items-center justify-between mb-2">
+                      <Label>Delivery Address *</Label>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={!useCustomAddress ? "default" : "outline"}
+                          onClick={() => handleAddressTypeChange(false)}
+                          className="h-7 text-xs"
+                        >
+                          Saved Sites
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={useCustomAddress ? "default" : "outline"}
+                          onClick={() => handleAddressTypeChange(true)}
+                          className="h-7 text-xs"
+                        >
+                          Custom Address
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {!useCustomAddress ? (
+                      <div>
+                        <Select
+                          value={selectedSiteId}
+                          onValueChange={handleSiteSelect}
+                          required={!useCustomAddress}
+                        >
+                          <SelectTrigger data-testid="booking-site-select">
+                            <SelectValue placeholder="Select a delivery site" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {deliverySites.length === 0 ? (
+                              <SelectItem value="no-sites" disabled>
+                                No saved sites - switch to custom address
+                              </SelectItem>
+                            ) : (
+                              deliverySites.map((site) => (
+                                <SelectItem key={site.id} value={site.id}>
+                                  {site.name} - {site.address}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                        {deliverySites.length === 0 && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            No saved sites. Add them in "Tanks & Equipment" → "Delivery Sites" tab, or use Custom Address.
+                          </p>
+                        )}
+                        {selectedSiteId && (
+                          <div className="mt-2 p-2 bg-blue-50 rounded text-sm">
+                            <div className="flex items-start">
+                              <MapPin className="w-4 h-4 text-blue-600 mr-2 mt-0.5" />
+                              <div>
+                                <p className="font-medium text-blue-900">
+                                  {deliverySites.find(s => s.id === selectedSiteId)?.name}
+                                </p>
+                                <p className="text-blue-700 text-xs">{newBooking.delivery_address}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div>
+                        <Input
+                          data-testid="booking-address"
+                          value={newBooking.delivery_address}
+                          onChange={(e) => setNewBooking({ ...newBooking, delivery_address: e.target.value })}
+                          placeholder="123 Main St, Montreal, QC H1A 1A1"
+                          required={useCustomAddress}
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Enter a one-time delivery address for this order
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   <div>
