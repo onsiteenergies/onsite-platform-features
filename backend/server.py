@@ -146,7 +146,8 @@ class Booking(BaseModel):
     user_id: str
     user_name: str
     user_email: str
-    delivery_address: str
+    delivery_address: str  # Primary/main delivery address (backward compatibility)
+    delivery_locations: Optional[List[dict]] = []  # List of {location_id, location_name, address, items: [{id, type, name, quantity}]}
     fuel_quantity_liters: float
     fuel_type: str  # diesel or gasoline
     preferred_date: str
@@ -154,8 +155,8 @@ class Booking(BaseModel):
     special_instructions: Optional[str] = None
     multiple_locations: Optional[List[str]] = None
     status: str = "pending"  # pending, confirmed, in_transit, delivered, cancelled
-    selected_tanks: Optional[List[dict]] = []  # List of {id, name, identifier, capacity}
-    selected_equipment: Optional[List[dict]] = []  # List of {id, name, unit_number, license_plate, capacity}
+    selected_tanks: Optional[List[dict]] = []  # List of {id, name, identifier, capacity, location_address}
+    selected_equipment: Optional[List[dict]] = []  # List of {id, name, unit_number, license_plate, capacity, location_address}
     rack_price: Optional[float] = None
     customer_price_modifier: Optional[float] = None
     fuel_price_per_liter: float
@@ -173,6 +174,7 @@ class Booking(BaseModel):
 
 class BookingCreate(BaseModel):
     delivery_address: str
+    delivery_locations: Optional[List[dict]] = None  # For multiple location bookings
     fuel_quantity_liters: float
     fuel_type: str
     preferred_date: str
