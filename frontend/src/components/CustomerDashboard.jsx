@@ -450,6 +450,15 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                                   {tank.capacity && (
                                     <p className="text-sm text-blue-600">Capacity: {tank.capacity}L</p>
                                   )}
+                                  {tank.location_name && (
+                                    <div className="flex items-center mt-1 text-xs text-blue-700 bg-blue-50 px-2 py-1 rounded inline-flex">
+                                      <MapPin className="w-3 h-3 mr-1" />
+                                      <span className="font-medium">{tank.location_name}</span>
+                                    </div>
+                                  )}
+                                  {tank.location_address && (
+                                    <p className="text-xs text-gray-500 mt-1">📍 {tank.location_address}</p>
+                                  )}
                                   {inOrder && (
                                     <p className="text-sm text-green-600 font-medium mt-1">
                                       ✓ In Order: {inOrder.quantity}L
