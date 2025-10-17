@@ -143,12 +143,34 @@ export default function CustomerDashboard({ user, token, onLogout }) {
         preferred_date: '',
         preferred_time: '',
         special_instructions: '',
-        multiple_locations: []
+        multiple_locations: [],
+        tank_id: '',
+        tank_name: '',
+        equipment_id: '',
+        equipment_name: ''
       });
       fetchBookings();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to create booking');
     }
+  };
+
+  const handleTankSelect = (tankId) => {
+    const selectedTank = tanks.find(t => t.id === tankId);
+    setNewBooking({
+      ...newBooking,
+      tank_id: tankId,
+      tank_name: selectedTank ? selectedTank.name : ''
+    });
+  };
+
+  const handleEquipmentSelect = (equipmentId) => {
+    const selectedEquipment = equipment.find(e => e.id === equipmentId);
+    setNewBooking({
+      ...newBooking,
+      equipment_id: equipmentId,
+      equipment_name: selectedEquipment ? selectedEquipment.name : ''
+    });
   };
 
   const addLocation = () => {
