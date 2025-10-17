@@ -107,6 +107,9 @@ class FuelTank(BaseModel):
     name: str
     identifier: str
     capacity: Optional[float] = None
+    location_id: Optional[str] = None  # ID of delivery site
+    location_name: Optional[str] = None  # Name of location
+    location_address: Optional[str] = None  # Full address
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class CustomerEquipment(BaseModel):
@@ -115,18 +118,27 @@ class CustomerEquipment(BaseModel):
     unit_number: str
     license_plate: str
     capacity: Optional[float] = None
+    location_id: Optional[str] = None  # ID of delivery site
+    location_name: Optional[str] = None  # Name of location
+    location_address: Optional[str] = None  # Full address
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class FuelTankCreate(BaseModel):
     name: str
     identifier: str
     capacity: Optional[float] = None
+    location_id: Optional[str] = None
+    location_name: Optional[str] = None
+    location_address: Optional[str] = None
 
 class CustomerEquipmentCreate(BaseModel):
     name: str
     unit_number: str
     license_plate: str
     capacity: Optional[float] = None
+    location_id: Optional[str] = None
+    location_name: Optional[str] = None
+    location_address: Optional[str] = None
 
 class Booking(BaseModel):
     model_config = ConfigDict(extra="ignore")
