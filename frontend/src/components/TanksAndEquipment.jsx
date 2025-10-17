@@ -165,7 +165,10 @@ export default function TanksAndEquipment({ token, onClose }) {
         name: equipmentForm.name,
         unit_number: equipmentForm.unit_number,
         license_plate: equipmentForm.license_plate,
-        capacity: equipmentForm.capacity ? parseFloat(equipmentForm.capacity) : null
+        capacity: equipmentForm.capacity ? parseFloat(equipmentForm.capacity) : null,
+        location_id: equipmentForm.location_id || null,
+        location_name: equipmentForm.location_name || null,
+        location_address: equipmentForm.location_address || null
       };
 
       if (editingEquipment) {
@@ -182,7 +185,15 @@ export default function TanksAndEquipment({ token, onClose }) {
 
       setShowEquipmentDialog(false);
       setEditingEquipment(null);
-      setEquipmentForm({ name: '', unit_number: '', license_plate: '', capacity: '' });
+      setEquipmentForm({ 
+        name: '', 
+        unit_number: '', 
+        license_plate: '', 
+        capacity: '',
+        location_id: '',
+        location_name: '',
+        location_address: ''
+      });
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to save equipment');
@@ -195,7 +206,10 @@ export default function TanksAndEquipment({ token, onClose }) {
       name: equip.name,
       unit_number: equip.unit_number,
       license_plate: equip.license_plate,
-      capacity: equip.capacity || ''
+      capacity: equip.capacity || '',
+      location_id: equip.location_id || '',
+      location_name: equip.location_name || '',
+      location_address: equip.location_address || ''
     });
     setShowEquipmentDialog(true);
   };
