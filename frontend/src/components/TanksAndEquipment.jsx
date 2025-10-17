@@ -61,6 +61,26 @@ export default function TanksAndEquipment({ token, onClose }) {
   };
 
   const handleLocationSelect = (locationId, formType) => {
+    if (!locationId || locationId === "") {
+      // Clear location
+      if (formType === 'tank') {
+        setTankForm({
+          ...tankForm,
+          location_id: '',
+          location_name: '',
+          location_address: ''
+        });
+      } else {
+        setEquipmentForm({
+          ...equipmentForm,
+          location_id: '',
+          location_name: '',
+          location_address: ''
+        });
+      }
+      return;
+    }
+    
     const site = deliverySites.find(s => s.id === locationId);
     if (formType === 'tank') {
       setTankForm({
