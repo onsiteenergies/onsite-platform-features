@@ -200,6 +200,8 @@ export default function CustomerDashboard({ user, token, onLogout }) {
         selected_equipment_ids: []
       });
       setOrderItems([]);
+      setUseCustomAddress(false);
+      setSelectedSiteId('');
       fetchBookings();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to create booking');
