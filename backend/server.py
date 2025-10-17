@@ -467,6 +467,80 @@ async def update_customer_pricing(
     customer = await db.users.find_one({"id": customer_id}, {"_id": 0, "password": 0})
     return customer
 
+# Fuel Tanks Management
+@api_router.get("/fuel-tanks")
+async def get_fuel_tanks(current_user: dict = Depends(get_current_user)):
+    tanks = await db.fuel_tanks.find({"user_id": current_user['id']}, {"_id": 0}).to_list(1000)
+    return tanks
+
+@api_router.post("/fuel-tanks")
+async def create_fuel_tank(tank_data: FuelTankCreate, current_user: dict = Depends(get_current_user)):
+    tank = FuelTank(**tank_data.model_dump(), id=str(uuid.uuid4()))
+    doc = tank.model_dump()
+    doc['user_id'] = current_user['id']
+    
+    await db.fuel_tanks.insert_one(doc)
+    return tank
+
+@api_router.put("/fuel-tanks/{tank_id}")
+async def update_fuel_tank(tank_id: str, tank_data: FuelTankCreate, current_user: dict = Depends(get_current_user)):
+    result = await db.fuel_tanks.update_one(
+        {"id": tank_id, "user_id": current_user['id']},
+        {"$set": tank_data.model_dump()}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Fuel tank not found")
+    
+    tank = await db.fuel_tanks.find_one({"id": tank_id}, {"_id": 0})
+    return tank
+
+@api_router.delete("/fuel-tanks/{tank_id}")
+async def delete_fuel_tank(tank_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.fuel_tanks.delete_one({"id": tank_id, "user_id": current_user['id']})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Fuel tank not found")
+    
+    return {"message": "Fuel tank deleted successfully"}
+
+# Customer Equipment Management
+@api_router.get("/equipment")
+async def get_equipment(current_user: dict = Depends(get_current_user)):
+    equipment = await db.customer_equipment.find({"user_id": current_user['id']}, {"_id": 0}).to_list(1000)
+    return equipment
+
+@api_router.post("/equipment")
+async def create_equipment(equipment_data: CustomerEquipmentCreate, current_user: dict = Depends(get_current_user)):
+    equipment = CustomerEquipment(**equipment_data.model_dump(), id=str(uuid.uuid4()))
+    doc = equipment.model_dump()
+    doc['user_id'] = current_user['id']
+    
+    await db.customer_equipment.insert_one(doc)
+    return equipment
+
+@api_router.put("/equipment/{equipment_id}")
+async def update_equipment(equipment_id: str, equipment_data: CustomerEquipmentCreate, current_user: dict = Depends(get_current_user)):
+    result = await db.customer_equipment.update_one(
+        {"id": equipment_id, "user_id": current_user['id']},
+        {"$set": equipment_data.model_dump()}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Equipment not found")
+    
+    equipment = await db.customer_equipment.find_one({"id": equipment_id}, {"_id": 0})
+    return equipment
+
+@api_router.delete("/equipment/{equipment_id}")
+async def delete_equipment(equipment_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.customer_equipment.delete_one({"id": equipment_id, "user_id": current_user['id']})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Equipment not found")
+    
+    return {"message": "Equipment deleted successfully"}
+
 # Invoice Management Routes
 @api_router.put("/invoices/{booking_id}")
 async def update_invoice(
