@@ -28,8 +28,7 @@ export default function CustomerDashboard({ user, token, onLogout }) {
     preferred_date: '',
     preferred_time: '',
     special_instructions: '',
-    multiple_locations: [],
-    trucks: [{ license_plate: '', driver_name: '', capacity_liters: '' }]
+    multiple_locations: []
   });
   const [locationInput, setLocationInput] = useState('');
 
