@@ -782,9 +782,9 @@ class FuelDeliveryAPITester:
 
     def run_all_tests(self):
         """Run all API tests"""
-        print("🚀 Starting Fuel Delivery API Tests...")
+        print("🚀 Starting Fuel Delivery Multi-Select & Admin Resource Management API Tests...")
         print(f"Testing against: {self.base_url}")
-        print("=" * 60)
+        print("=" * 80)
 
         # Authentication Tests
         print("\n📝 Authentication Tests")
@@ -792,23 +792,70 @@ class FuelDeliveryAPITester:
         customer_login_success = self.test_customer_login()
         self.test_customer_registration()
 
-        # Pricing Tests
-        print("\n💰 Pricing Tests")
-        pricing_success, pricing_data = self.test_get_pricing()
-        if admin_login_success:
-            self.test_update_pricing()
+        # Customer Resource Creation Tests (Prerequisites for multi-select)
+        print("\n🏗️ Customer Resource Creation Tests")
+        tanks_created = False
+        equipment_created = False
+        if customer_login_success:
+            tanks_created = self.test_create_customer_tanks()
+            equipment_created = self.test_create_customer_equipment()
 
-        # Booking Tests
-        print("\n📦 Booking Tests")
+        # Multi-Select Booking Tests
+        print("\n📦 Multi-Select Booking Tests")
+        multi_booking_ids = []
+        if customer_login_success and tanks_created:
+            success, booking_id = self.test_multi_select_booking_tanks_only()
+            if success:
+                multi_booking_ids.append(booking_id)
+                
+        if customer_login_success and equipment_created:
+            success, booking_id = self.test_multi_select_booking_equipment_only()
+            if success:
+                multi_booking_ids.append(booking_id)
+                
+        if customer_login_success and tanks_created and equipment_created:
+            success, booking_id = self.test_multi_select_booking_both()
+            if success:
+                multi_booking_ids.append(booking_id)
+
+        # Backward Compatibility Tests
+        print("\n🔄 Backward Compatibility Tests")
+        if customer_login_success:
+            success, booking_id = self.test_backward_compatibility_booking()
+            if success:
+                multi_booking_ids.append(booking_id)
+
+        # Admin Resource Management Tests
+        print("\n👑 Admin Resource Management Tests")
+        if admin_login_success:
+            self.test_admin_get_all_tanks()
+            self.test_admin_create_tank()
+            self.test_admin_update_tank()
+            self.test_admin_get_all_equipment()
+            self.test_admin_create_equipment()
+            self.test_admin_update_equipment()
+
+        # Security Tests
+        print("\n🔒 Security Tests")
+        if customer_login_success:
+            self.test_customer_access_admin_endpoints()
+
+        # Edge Cases Tests
+        print("\n⚠️ Edge Cases Tests")
+        if customer_login_success:
+            self.test_edge_cases()
+
+        # Standard Booking Tests
+        print("\n📦 Standard Booking Tests")
         booking_id = None
         if customer_login_success:
-            booking_success, booking_id = self.test_create_booking()
             self.test_get_bookings_customer()
 
         if admin_login_success:
             self.test_get_bookings_admin()
-            if booking_id:
-                self.test_update_booking_status(booking_id)
+            if len(multi_booking_ids) > 0:
+                self.test_update_booking_status(multi_booking_ids[0])
+                booking_id = multi_booking_ids[0]
 
         # Delivery Log Tests
         print("\n🚛 Delivery Log Tests")
@@ -824,8 +871,13 @@ class FuelDeliveryAPITester:
         if admin_login_success:
             self.test_get_admin_stats()
 
+        # Cleanup Tests
+        print("\n🧹 Cleanup Tests")
+        if admin_login_success:
+            self.test_admin_delete_resources()
+
         # Print Summary
-        print("\n" + "=" * 60)
+        print("\n" + "=" * 80)
         print(f"📊 Test Summary: {self.tests_passed}/{self.tests_run} tests passed")
         
         if self.tests_passed == self.tests_run:
