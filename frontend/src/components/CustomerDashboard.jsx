@@ -50,7 +50,18 @@ export default function CustomerDashboard({ user, token, onLogout }) {
   }, []);
 
   const fetchData = async () => {
-    await Promise.all([fetchBookings(), fetchPricing(), fetchTanksAndEquipment()]);
+    await Promise.all([fetchBookings(), fetchPricing(), fetchTanksAndEquipment(), fetchDeliverySites()]);
+  };
+
+  const fetchDeliverySites = async () => {
+    try {
+      const response = await axios.get(`${API}/delivery-sites`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setDeliverySites(response.data || []);
+    } catch (error) {
+      console.error('Failed to fetch delivery sites:', error);
+    }
   };
 
   const fetchPricing = async () => {
