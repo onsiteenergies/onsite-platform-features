@@ -40,10 +40,15 @@ export default function CustomerDashboard({ user, token, onLogout }) {
   const [locationInput, setLocationInput] = useState('');
   
   // New state for "Add to Order" functionality
-  const [orderItems, setOrderItems] = useState([]); // [{id, type: 'tank'|'equipment', name, quantity, capacity}]
+  const [orderItems, setOrderItems] = useState([]); // [{id, type: 'tank'|'equipment', name, quantity, capacity, delivery_site_id, delivery_address}]
   const [showAddToOrderDialog, setShowAddToOrderDialog] = useState(false);
   const [currentOrderItem, setCurrentOrderItem] = useState(null);
   const [orderQuantity, setOrderQuantity] = useState('');
+  
+  // Delivery location for individual items
+  const [itemDeliveryMode, setItemDeliveryMode] = useState('stored'); // 'stored', 'saved_site', 'custom'
+  const [itemDeliverySiteId, setItemDeliverySiteId] = useState('');
+  const [itemCustomAddress, setItemCustomAddress] = useState('');
 
   useEffect(() => {
     fetchData();
