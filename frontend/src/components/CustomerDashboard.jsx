@@ -866,6 +866,27 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                             <span className="font-semibold">Your Fuel Price:</span>
                             <span className="font-bold text-blue-900">${booking.fuel_price_per_liter.toFixed(4)}/L</span>
                           </div>
+                          
+                          {/* Price with Carbon Taxes */}
+                          <div className="flex justify-between pt-1 mt-1 border-t border-blue-200">
+                            <span className="font-semibold">Fuel + Carbon Taxes:</span>
+                            <span className="font-bold text-blue-900">
+                              ${(booking.fuel_price_per_liter + booking.federal_carbon_tax + booking.quebec_carbon_tax).toFixed(4)}/L
+                            </span>
+                          </div>
+                          
+                          {/* Final Price per Liter (with all taxes) */}
+                          <div className="flex justify-between pt-1 mt-1 border-t border-blue-300 bg-blue-100 -mx-3 px-3 py-2 rounded">
+                            <span className="font-bold">Final Price per Liter (incl. all taxes):</span>
+                            <span className="font-bold text-blue-950">
+                              ${(() => {
+                                const fuelWithCarbon = booking.fuel_price_per_liter + booking.federal_carbon_tax + booking.quebec_carbon_tax;
+                                const withGST = fuelWithCarbon * (1 + booking.gst_rate);
+                                const withQST = withGST * (1 + booking.qst_rate);
+                                return withQST.toFixed(4);
+                              })()}/L
+                            </span>
+                          </div>
                         </div>
                       </div>
                     )}
