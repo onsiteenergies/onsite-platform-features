@@ -103,7 +103,10 @@ export default function TanksAndEquipment({ token, onClose }) {
       const data = {
         name: tankForm.name,
         identifier: tankForm.identifier,
-        capacity: tankForm.capacity ? parseFloat(tankForm.capacity) : null
+        capacity: tankForm.capacity ? parseFloat(tankForm.capacity) : null,
+        location_id: tankForm.location_id || null,
+        location_name: tankForm.location_name || null,
+        location_address: tankForm.location_address || null
       };
 
       if (editingTank) {
