@@ -714,20 +714,32 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                       </div>
                       <div className="space-y-2">
                         {orderItems.map((item, idx) => (
-                          <div key={`${item.type}-${item.id}-${idx}`} className="flex justify-between items-center bg-white p-3 rounded border">
+                          <div key={`${item.type}-${item.id}-${idx}`} className="flex justify-between items-start bg-white p-3 rounded border">
                             <div className="flex-1">
                               <p className="font-medium text-sm">
                                 {item.type === 'tank' ? '🛢️' : '🚚'} {item.name}
                               </p>
                               <p className="text-xs text-gray-600">{item.identifier}</p>
-                              {item.location_name && (
-                                <div className="flex items-center mt-1">
-                                  <MapPin className="w-3 h-3 mr-1 text-blue-600" />
-                                  <span className="text-xs text-blue-700 font-medium">{item.location_name}</span>
+                              
+                              {/* Show delivery location */}
+                              {item.delivery_location_name && (
+                                <div className="mt-2 bg-amber-50 border border-amber-200 p-2 rounded">
+                                  <p className="text-xs font-semibold text-amber-900 flex items-center">
+                                    <MapPin className="w-3 h-3 mr-1" />
+                                    Deliver to: {item.delivery_location_name}
+                                  </p>
+                                  {item.delivery_address && (
+                                    <p className="text-xs text-amber-700 ml-4">📍 {item.delivery_address}</p>
+                                  )}
                                 </div>
                               )}
-                              {item.location_address && (
-                                <p className="text-xs text-gray-500 mt-0.5">📍 {item.location_address}</p>
+                              
+                              {/* Show stored location if no delivery location specified */}
+                              {!item.delivery_location_name && item.stored_location_name && (
+                                <div className="flex items-center mt-1">
+                                  <MapPin className="w-3 h-3 mr-1 text-gray-500" />
+                                  <span className="text-xs text-gray-600">Stored: {item.stored_location_name}</span>
+                                </div>
                               )}
                             </div>
                             <div className="flex items-center space-x-2">
