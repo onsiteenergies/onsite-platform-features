@@ -135,7 +135,10 @@ export default function TanksAndEquipment({ token, onClose }) {
     setTankForm({
       name: tank.name,
       identifier: tank.identifier,
-      capacity: tank.capacity || ''
+      capacity: tank.capacity || '',
+      location_id: tank.location_id || '',
+      location_name: tank.location_name || '',
+      location_address: tank.location_address || ''
     });
     setShowTankDialog(true);
   };
