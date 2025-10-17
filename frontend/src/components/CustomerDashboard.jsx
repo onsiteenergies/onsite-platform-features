@@ -766,6 +766,8 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                   <Button type="button" variant="outline" onClick={() => {
                     setShowNewBooking(false);
                     setOrderItems([]);
+                    setUseCustomAddress(false);
+                    setSelectedSiteId('');
                   }}>
                     Cancel
                   </Button>
