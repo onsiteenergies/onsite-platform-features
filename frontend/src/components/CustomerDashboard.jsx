@@ -561,12 +561,21 @@ export default function CustomerDashboard({ user, token, onLogout }) {
                       </div>
                       <div className="space-y-2">
                         {orderItems.map((item, idx) => (
-                          <div key={`${item.type}-${item.id}-${idx}`} className="flex justify-between items-center bg-white p-2 rounded">
+                          <div key={`${item.type}-${item.id}-${idx}`} className="flex justify-between items-center bg-white p-3 rounded border">
                             <div className="flex-1">
                               <p className="font-medium text-sm">
                                 {item.type === 'tank' ? '🛢️' : '🚚'} {item.name}
                               </p>
                               <p className="text-xs text-gray-600">{item.identifier}</p>
+                              {item.location_name && (
+                                <div className="flex items-center mt-1">
+                                  <MapPin className="w-3 h-3 mr-1 text-blue-600" />
+                                  <span className="text-xs text-blue-700 font-medium">{item.location_name}</span>
+                                </div>
+                              )}
+                              {item.location_address && (
+                                <p className="text-xs text-gray-500 mt-0.5">📍 {item.location_address}</p>
+                              )}
                             </div>
                             <div className="flex items-center space-x-2">
                               <span className="font-bold text-green-700">{item.quantity}L</span>
