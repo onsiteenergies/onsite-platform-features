@@ -409,6 +409,30 @@ export default function TanksAndEquipment({ token, onClose }) {
                 data-testid="tank-capacity"
               />
             </div>
+            <div>
+              <Label>Location/Site</Label>
+              <Select 
+                value={tankForm.location_id} 
+                onValueChange={(value) => handleLocationSelect(value, 'tank')}
+              >
+                <SelectTrigger data-testid="tank-location">
+                  <SelectValue placeholder="Select delivery site (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">No location</SelectItem>
+                  {deliverySites.map((site) => (
+                    <SelectItem key={site.id} value={site.id}>
+                      {site.name} - {site.address}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {deliverySites.length === 0 && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Go to Delivery Sites tab to add locations
+                </p>
+              )}
+            </div>
             <div className="flex justify-end space-x-2">
               <Button type="button" variant="outline" onClick={() => setShowTankDialog(false)}>
                 Cancel
