@@ -96,6 +96,30 @@ class UserLogin(BaseModel):
     email: str
     password: str
 
+class FuelTank(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    identifier: str
+    capacity: Optional[float] = None
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class CustomerEquipment(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    unit_number: str
+    license_plate: str
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class FuelTankCreate(BaseModel):
+    name: str
+    identifier: str
+    capacity: Optional[float] = None
+
+class CustomerEquipmentCreate(BaseModel):
+    name: str
+    unit_number: str
+    license_plate: str
+
 class TruckDetails(BaseModel):
     license_plate: str
     driver_name: str
